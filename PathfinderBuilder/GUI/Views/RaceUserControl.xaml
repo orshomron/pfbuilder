@@ -1,0 +1,61 @@
+﻿<UserControl x:Class="GUI.Views.RaceUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:converters="clr-namespace:GUI.Converters"
+             DataContext="{Binding Source={StaticResource Locator}, Path=RaceViewModel}"
+             mc:Ignorable="d" Height="600" Width="800">
+    <UserControl.Resources>
+        <converters:EnumMatchToBooleanConverter x:Key="EnumToBooleanConverter" />
+        <converters:RaceToRaceNameConverter x:Key="RaceNameConverter"/>
+    </UserControl.Resources>
+    <Grid>
+        <Label Margin="10,10,0,0" 
+               HorizontalAlignment="Left" 
+               Width="60" 
+               Height="25" 
+               VerticalAlignment="Top" 
+               Content="Race:"/>
+        <ComboBox Width="150px"
+                  Height="25px" 
+                  Margin="75,10,0,0" 
+                  HorizontalAlignment="Left" 
+                  VerticalAlignment="Top"
+                  ItemsSource="{Binding RacesList, Mode=OneTime}"
+                  SelectedItem="{Binding Race}"
+                  DisplayMemberPath="RaceName"/>
+        <GroupBox Header="Optional Ability Modifier"
+                  Width="200px"
+                  Height="145px"
+                  IsEnabled="{Binding RaceHasOptionalAbilityModifier}" Margin="590,10,10,445">
+            <StackPanel>
+                <RadioButton GroupName="OptionalAbilityModifier" 
+                             Content="Strength" 
+                             Margin="0,5,0,0"
+                             IsChecked="{Binding SelectedOptionalAbilityModifier, ConverterParameter=Strength, Converter={StaticResource EnumToBooleanConverter}}"/>
+                <RadioButton GroupName="OptionalAbilityModifier" 
+                             Content="Dexterity" 
+                             Margin="0,5,0,0"
+                             IsChecked="{Binding SelectedOptionalAbilityModifier, ConverterParameter=Dexterity, Converter={StaticResource EnumToBooleanConverter}}"/>
+                <RadioButton GroupName="OptionalAbilityModifier" 
+                             Content="Constitution" 
+                             Margin="0,5,0,0"
+                             IsChecked="{Binding SelectedOptionalAbilityModifier, ConverterParameter=Constitution, Converter={StaticResource EnumToBooleanConverter}}"/>
+                <RadioButton GroupName="OptionalAbilityModifier" 
+                             Content="Intelligence"
+                             Margin="0,5,0,0"
+                             IsChecked="{Binding SelectedOptionalAbilityModifier, ConverterParameter=Intelligence, Converter={StaticResource EnumToBooleanConverter}}"/>
+                <RadioButton GroupName="OptionalAbilityModifier" 
+                             Content="Wisdom" 
+                             Margin="0,5,0,0"
+                             IsChecked="{Binding SelectedOptionalAbilityModifier, ConverterParameter=Wisdom, Converter={StaticResource EnumToBooleanConverter}}"/>
+                <RadioButton GroupName="OptionalAbilityModifier" 
+                             Content="Charisma" 
+                             Margin="0,5,0,0"
+                             IsChecked="{Binding SelectedOptionalAbilityModifier, ConverterParameter=Charisma, Converter={StaticResource EnumToBooleanConverter}}"/>
+            </StackPanel>
+        </GroupBox>
+
+    </Grid>
+</UserControl>
