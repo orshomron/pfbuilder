@@ -4,58 +4,198 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:converters="clr-namespace:GUI.Converters"
+             xmlns:xamlExtensions="clr-namespace:GUI.XAMLExtensions"
+             xmlns:viewModels="clr-namespace:GUI.ViewModels"
              DataContext="{Binding Source={StaticResource Locator}, Path=RaceViewModel}"
-             mc:Ignorable="d" Height="600" Width="800">
+             mc:Ignorable="d" 
+             d:DesignHeight="600" 
+             d:DesignWidth="800"
+             Background="White">
     <UserControl.Resources>
         <converters:EnumMatchToBooleanConverter x:Key="EnumToBooleanConverter" />
-        <converters:RaceToRaceNameConverter x:Key="RaceNameConverter"/>
+        <converters:SubtractConverter SubtractAmount="15" x:Key="Subtract15Converter" />
+        <converters:ReplacedTraitsToVisibilityConverter x:Key="ReplacedTraitsToVisibilityConverter" />
+        <converters:TooHighToBrushConverter x:Key="TooHighToBrushConverter" Threshold="0"/>
+        <DataTemplate DataType="{x:Type viewModels:GenericRacialTraitViewModel}">
+            <StackPanel Orientation="Vertical"
+                        HorizontalAlignment="Stretch">
+                <StackPanel.Width>
+                    <Binding Path="ActualWidth" 
+                             RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type ScrollContentPresenter}}" 
+                             Converter="{StaticResource Subtract15Converter}"/>
+                </StackPanel.Width>
+                <Label Content="{Binding Name,Mode=OneTime}" />
+                <TextBox Text="{Binding Description,Mode=OneTime}" 
+                         IsReadOnly="True"
+                         HorizontalAlignment="Stretch"/>
+                <Label ContentStringFormat="Replaced Traits: {0}" Content="{Binding ReplacedTraits, Mode=OneWay}" 
+                       Visibility="{Binding ReplacedTraits, Converter={StaticResource ReplacedTraitsToVisibilityConverter}}"/>
+            </StackPanel>
+        </DataTemplate>
     </UserControl.Resources>
     <Grid>
-        <Label Margin="10,10,0,0" 
-               HorizontalAlignment="Left" 
-               Width="60" 
-               Height="25" 
-               VerticalAlignment="Top" 
-               Content="Race:"/>
-        <ComboBox Width="150px"
-                  Height="25px" 
-                  Margin="75,10,0,0" 
-                  HorizontalAlignment="Left" 
-                  VerticalAlignment="Top"
-                  ItemsSource="{Binding RacesList, Mode=OneTime}"
-                  SelectedItem="{Binding Race}"
-                  DisplayMemberPath="RaceName"/>
-        <GroupBox Header="Optional Ability Modifier"
-                  Width="200px"
-                  Height="145px"
-                  IsEnabled="{Binding RaceHasOptionalAbilityModifier}" Margin="590,10,10,445">
-            <StackPanel>
-                <RadioButton GroupName="OptionalAbilityModifier" 
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.35*"  MinHeight="160px"/>
+            <RowDefinition Height="0.65*" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50px" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="220" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Row="0"
+                        Grid.Column="0"
+                        Orientation="Horizontal">
+                <Label Margin="10"
+                       Height="30px"
+                       Content="Race:"/>
+                <ComboBox Width="150px"
+                          Height="30px" 
+                          ItemsSource="{Binding RacesList, Mode=OneTime}"
+                          SelectedItem="{Binding Race}"
+                          DisplayMemberPath="RaceName"/>
+            </StackPanel>
+            <GroupBox Header="Optional Ability Modifier"
+                      VerticalAlignment="Center"
+                      HorizontalAlignment="Center"
+                      Grid.Row="0"
+                      Grid.Column="1"
+                      Grid.RowSpan="2"
+                      IsEnabled="{Binding RaceHasOptionalAbilityModifier}" Margin="0,10,10,0">
+                <StackPanel>
+                    <RadioButton GroupName="OptionalAbilityModifier" 
                              Content="Strength" 
                              Margin="0,5,0,0"
                              IsChecked="{Binding SelectedOptionalAbilityModifier, ConverterParameter=Strength, Converter={StaticResource EnumToBooleanConverter}}"/>
-                <RadioButton GroupName="OptionalAbilityModifier" 
+                    <RadioButton GroupName="OptionalAbilityModifier" 
                              Content="Dexterity" 
                              Margin="0,5,0,0"
                              IsChecked="{Binding SelectedOptionalAbilityModifier, ConverterParameter=Dexterity, Converter={StaticResource EnumToBooleanConverter}}"/>
-                <RadioButton GroupName="OptionalAbilityModifier" 
+                    <RadioButton GroupName="OptionalAbilityModifier" 
                              Content="Constitution" 
                              Margin="0,5,0,0"
                              IsChecked="{Binding SelectedOptionalAbilityModifier, ConverterParameter=Constitution, Converter={StaticResource EnumToBooleanConverter}}"/>
-                <RadioButton GroupName="OptionalAbilityModifier" 
+                    <RadioButton GroupName="OptionalAbilityModifier" 
                              Content="Intelligence"
                              Margin="0,5,0,0"
                              IsChecked="{Binding SelectedOptionalAbilityModifier, ConverterParameter=Intelligence, Converter={StaticResource EnumToBooleanConverter}}"/>
-                <RadioButton GroupName="OptionalAbilityModifier" 
+                    <RadioButton GroupName="OptionalAbilityModifier" 
                              Content="Wisdom" 
                              Margin="0,5,0,0"
                              IsChecked="{Binding SelectedOptionalAbilityModifier, ConverterParameter=Wisdom, Converter={StaticResource EnumToBooleanConverter}}"/>
-                <RadioButton GroupName="OptionalAbilityModifier" 
+                    <RadioButton GroupName="OptionalAbilityModifier" 
                              Content="Charisma" 
                              Margin="0,5,0,0"
                              IsChecked="{Binding SelectedOptionalAbilityModifier, ConverterParameter=Charisma, Converter={StaticResource EnumToBooleanConverter}}"/>
+                </StackPanel>
+            </GroupBox>
+            <Grid Grid.Row="1"
+                  Grid.Column="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="120px" />
+                    <ColumnDefinition Width="200px" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30px" />
+                    <RowDefinition Height="30px" />
+                    <RowDefinition Height="30px" />
+                    <RowDefinition Height="30px" />
+                    <RowDefinition Height="30px" />
+                </Grid.RowDefinitions>
+
+                <Label Content="Size: " 
+                           Grid.Column="0"
+                           Grid.Row="0"/>
+                <TextBox Text="{Binding Size, Mode=OneWay}" 
+                             Grid.Column="1"
+                             Grid.Row="0"
+                             IsReadOnly="True"
+                             Width="200px"/>
+
+                <Label Content="Ability Modifiers: " 
+                           Grid.Column="0"
+                           Grid.Row="1"/>
+                <TextBox Text="{Binding AbilityModifiersString, Mode=OneWay}" 
+                             Grid.Column="1"
+                             Grid.Row="1"
+                             IsReadOnly="True"
+                             Width="200px"/>
+
+            </Grid>
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30px" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="30px" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="30px"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Row="2"
+                        Grid.Column="0"
+                        Margin ="5,0,0,5"
+                        Orientation="Horizontal">
+                <Label>Additional RP used: </Label>
+                <TextBox Text="{Binding TotalRP, Mode=OneWay}"
+                         Background="{Binding TotalRP, Converter={StaticResource TooHighToBrushConverter}}"
+                         IsReadOnly="True"
+                         Width="120px"/>
             </StackPanel>
-        </GroupBox>
+            
+            <Label Grid.Row="0"
+                   Grid.Column="0"
+                   Content="Selected Racial Traits:" />
+
+            <Label Grid.Row="0"
+                   Grid.Column="2"
+                   Content="Available Racial Traits:" />
+
+            <Button Grid.Row="1"
+                   Grid.Column="1"
+                   VerticalAlignment="Center"
+                   Margin="5"
+                    Content="&lt;"
+                    Height="20px"
+                    Command="{Binding MoveFromAvailableToSelectedCommand}"/>
+
+            <ListBox Grid.Column="0"
+                     Grid.Row="1"
+                     ItemsSource="{Binding SelectedTraits}"
+                     SelectedItem="{Binding SelectedSelectedTrait}"
+                     Margin="10">
+                <ListBox.ItemContainerStyle>
+                    <Style>
+                        <Setter Property="xamlExtensions:ControlItemDoubleClick.Command" Value="{Binding DataContext.DeleteSelectedTraitCommand,
+                                    RelativeSource={RelativeSource FindAncestor, 
+                                    AncestorType={x:Type UserControl}}}"/>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+            </ListBox>
+
+            <ListBox Grid.Column="2"
+                     Grid.Row="1"
+                     Margin="10"
+                     SelectedItem="{Binding SelectedAvailableTrait}"
+                     ItemsSource="{Binding AvailableTraits}">
+                <ListBox.ItemContainerStyle>
+                    <Style>
+                        <Setter Property="xamlExtensions:ControlItemDoubleClick.Command" Value="{Binding DataContext.MoveFromAvailableToSelectedCommand,
+                                    RelativeSource={RelativeSource FindAncestor, 
+                                    AncestorType={x:Type UserControl}}}"/>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+            </ListBox>
+        </Grid>
 
     </Grid>
 </UserControl>

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace PathfinderBuilder
 {
@@ -6,88 +7,107 @@ namespace PathfinderBuilder
     {
         string Name { get; }
         string Description { get; }
-        ICollection<IRacialTrait> ReplacedTraits { get; }
+        object TraitCategory { get; }
+        Type CategoryType { get; }
+        int RP { get; }
     }
 
     public class SimpleSkillAdditionRacialTrait : IAddToSkills, IRacialTrait
     {
-        private static readonly List<IRacialTrait> NoTraits = new List<IRacialTrait>();
         private readonly Dictionary<Skills, int> _skillAddition = new Dictionary<Skills, int>();
 
-        public SimpleSkillAdditionRacialTrait(string name, string description, IEnumerable<KeyValuePair<Skills, int>> skillAdditions)
+        public SimpleSkillAdditionRacialTrait(string name, string description, IEnumerable<KeyValuePair<Skills, int>> skillAdditions, Type categoryType, object traitCategory = null)
         {
+            CategoryType = categoryType;
             Name = name;
             Description = description;
             foreach (var pair in skillAdditions)
             {
                 _skillAddition.Add(pair.Key, pair.Value);
             }
+            TraitCategory = traitCategory ?? BaseRacialTraits.None;
         }
 
+        public object TraitCategory { get; private set; }
+        public Type CategoryType { get; private set; }
+        public int RP { get; set; }
         public IDictionary<Skills, int> SkillAndModifier { get { return _skillAddition; } }
         public string Name { get; private set; }
         public string Description { get; private set; }
-        public ICollection<IRacialTrait> ReplacedTraits { get { return NoTraits; } }
     }
 
     public class AddSkillPointsPerLevelRacialTrait : IRacialTrait, IAddsSkillPointPerLevel
     {
-        private static readonly List<IRacialTrait> NoTraits = new List<IRacialTrait>();
-
-        public AddSkillPointsPerLevelRacialTrait(string name, string description, int pointsPerLevel)
+        public AddSkillPointsPerLevelRacialTrait(string name, string description, int pointsPerLevel, Type categoryType, object traitCategory = null)
         {
+            CategoryType = categoryType;
             Name = name;
             Description = description;
             SkillPointsPerLevel = pointsPerLevel;
+            TraitCategory = traitCategory ?? BaseRacialTraits.None;
         }
 
         public string Name { get; private set; }
         public string Description { get; private set; }
+        public object TraitCategory { get; private set; }
+        public Type CategoryType { get; private set; }
+        public int RP { get;  set; }
         public int SkillPointsPerLevel { get; private set; }
-        public ICollection<IRacialTrait> ReplacedTraits { get { return NoTraits; } }
     }
 
     public class SimpleRacialTrait : IRacialTrait
     {
-        private static readonly List<IRacialTrait> NoTraits = new List<IRacialTrait>();
 
-        public SimpleRacialTrait(string name, string description)
+        public SimpleRacialTrait(string name, string description, Type categoryType, object traitCategory = null)
         {
+            CategoryType = categoryType;
             Name = name;
             Description = description;
+            TraitCategory = traitCategory ?? BaseRacialTraits.None;
         }
 
         public string Name { get; private set; }
         public string Description { get; private set; }
-        public ICollection<IRacialTrait> ReplacedTraits { get { return NoTraits; } }
+        public object TraitCategory { get; private set; }
+        public Type CategoryType { get; private set; }
+        public int RP { get; set; }
     }
 
     public class LowLightVisionRacialTrait : IRacialTrait, ILowLightVision
     {
-        private static readonly List<IRacialTrait> NoTraits = new List<IRacialTrait>();
+        public LowLightVisionRacialTrait(Type categoryType, object traitCategory)
+        {
+            CategoryType = categoryType;
+            TraitCategory = traitCategory ?? BaseRacialTraits.None;
+        }
 
+        public int RP { get; set; }
         public string Name
         {
             get { return "Low-Light Vision"; }
         }
         public string Description { get { return "see twice as far as humans in conditions of dim light"; } }
-        public ICollection<IRacialTrait> ReplacedTraits { get { return NoTraits; } }
+        public object TraitCategory { get; set; }
+        public Type CategoryType { get; set; }
     }
 
     public class FeatsAtFirstLevelRacialTrait : IRacialTrait, IFeatsAtFirstLevel
     {
-        private static readonly List<IRacialTrait> NoTraits = new List<IRacialTrait>();
 
-        public FeatsAtFirstLevelRacialTrait(string name, string description, int numberOfFeats)
+        public FeatsAtFirstLevelRacialTrait(string name, string description, int numberOfFeats, Type categoryType, object traitCategory = null)
         {
+            CategoryType = categoryType;
             Name = name;
             Description = description;
             NumberOfFeats = numberOfFeats;
+            TraitCategory = traitCategory ?? BaseRacialTraits.None;
         }
 
+        public int RP { get; set; }
         public string Name { get; private set; }
         public string Description { get; private set; }
+        public object TraitCategory { get; private set; }
+        public Type CategoryType { get; private set; }
         public int NumberOfFeats { get; private set; }
-        public ICollection<IRacialTrait> ReplacedTraits { get { return NoTraits; } }
     }
 }

@@ -59,6 +59,20 @@ namespace PathfinderBuilder
         Racial = 1ul << 63
     }
 
+    [Flags]
+    public enum BaseRacialTraits : ulong
+    {
+        None = 0ul,
+        [Display(ShortName = "Low-Light Vision")]
+        LowLightVision = 1ul << 63,
+        [Display(ShortName = "Darkvision")]
+        Darkvision = 1ul << 62,
+        [Display(ShortName = "Weapon Familiarity")]
+        WeaponFamiliarity = 1ul << 61,
+        [Display(ShortName = "Keen Senses")]
+        KeenSenses = 1ul << 60,
+    }
+
     public enum MagicSchool
     {
         None = 0,

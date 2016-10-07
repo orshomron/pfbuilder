@@ -92,10 +92,13 @@
     </ApplicationDefinition>
     <Compile Include="Commands\AddRemoveArchtypeCommand.cs" />
     <Compile Include="Commands\BaseCommand.cs" />
+    <Compile Include="Commands\RemoveRacialTraitCommand.cs" />
+    <Compile Include="Commands\RacialTraitCommand.cs" />
     <Compile Include="Commands\RemoveClassCommand.cs" />
     <Compile Include="Commands\CreateClassLevelCommand.cs" />
     <Compile Include="Commands\MoveLanguagesCommand.cs" />
     <Compile Include="Converters\ArchtypeAvailablilityUsageToBrushConverter.cs" />
+    <Compile Include="Converters\ReplacedTraitsToVisibilityConverter.cs" />
     <Compile Include="Converters\TooLowToBrushConverter.cs" />
     <Compile Include="Converters\SubtractConverter.cs" />
     <Compile Include="Converters\AbilityCostConverter.cs" />
@@ -106,7 +109,6 @@
     <Compile Include="Converters\EnumMatchToBooleanConverter.cs" />
     <Compile Include="Converters\EnumToShortNameConverter.cs" />
     <Compile Include="Converters\ProficiencyToLabelConverter.cs" />
-    <Compile Include="Converters\RaceToRaceNameConverter.cs" />
     <Compile Include="Converters\SumConverter.cs" />
     <Compile Include="MyContainer.cs" />
     <Compile Include="ViewModels\AbilitiesViewModel.cs" />

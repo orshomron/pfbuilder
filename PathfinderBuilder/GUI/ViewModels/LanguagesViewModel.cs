@@ -61,6 +61,7 @@ namespace GUI.ViewModels
         {
             _owner = owner;
             _owner.RaceVM.PropertyChanged += CharacterVMOnPropertyChanged;
+            _owner.RaceVM.PropertyChanged += RaceVMOnPropertyChanged;
             _owner.AbilitiesVM.PropertyChanged += CharacterVMOnPropertyChanged;
             _owner.SkillsVM.PropertyChanged += CharacterVMOnPropertyChanged;
 
@@ -74,6 +75,11 @@ namespace GUI.ViewModels
             _availableToKnownCommand = new MoveLanguagesAvailableToKnownCommand(this);
         }
 
+        private void RaceVMOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            ResetLanguageLists();
+        }
+
         private void LangaugeCollectionsChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             OnPropertyChanged("LeftToSelect");
@@ -81,6 +87,9 @@ namespace GUI.ViewModels
 
         private void ResetLanguageLists()
         {
+            _knownLanguages.Clear();
+            _availableLanguages.Clear();
+            
             foreach (var startingLanguage in _owner.Character.Race.StartingLanguages)
             {
                 _knownLanguages.Add(new LanguageViewModel(true, startingLanguage));
@@ -105,8 +114,6 @@ namespace GUI.ViewModels
                 {
                     _availableLanguages.Add(new LanguageViewModel(false, language));
                 }
-                OnPropertyChanged("AvailableLanguages");
-                OnPropertyChanged("KnownLanguages");
             }
             if (_hasLinguistics && (!_owner.Character.SkillRanks.ContainsKey(Skills.Linguistics) ||
                                     _owner.Character.SkillRanks[Skills.Linguistics] == 0))
@@ -139,10 +146,11 @@ namespace GUI.ViewModels
                 {
                     _knownLanguages.Remove(vm);
                 }
-                OnPropertyChanged("AvailableLanguages");
-                OnPropertyChanged("KnownLanguages");
+
             }
 
+            OnPropertyChanged("AvailableLanguages");
+            OnPropertyChanged("KnownLanguages");
             OnPropertyChanged("TotalToSelect");
             OnPropertyChanged("LeftToSelect");
         }
