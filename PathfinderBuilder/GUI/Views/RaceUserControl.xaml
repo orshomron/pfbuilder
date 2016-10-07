@@ -15,6 +15,7 @@
         <converters:EnumMatchToBooleanConverter x:Key="EnumToBooleanConverter" />
         <converters:SubtractConverter SubtractAmount="15" x:Key="Subtract15Converter" />
         <converters:ReplacedTraitsToVisibilityConverter x:Key="ReplacedTraitsToVisibilityConverter" />
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <converters:TooHighToBrushConverter x:Key="TooHighToBrushConverter" Threshold="0"/>
         <DataTemplate DataType="{x:Type viewModels:GenericRacialTraitViewModel}">
             <StackPanel Orientation="Vertical"
@@ -24,7 +25,12 @@
                              RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type ScrollContentPresenter}}" 
                              Converter="{StaticResource Subtract15Converter}"/>
                 </StackPanel.Width>
-                <Label Content="{Binding Name,Mode=OneTime}" />
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="{Binding Name,Mode=OneTime}" />
+                    <Label Content="{Binding RP,Mode=OneTime}" 
+                           ContentStringFormat=" ({0} RP)" 
+                           Visibility="{Binding HasRP, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                </StackPanel>
                 <TextBox Text="{Binding Description,Mode=OneTime}" 
                          IsReadOnly="True"
                          HorizontalAlignment="Stretch"/>
@@ -145,13 +151,13 @@
                         Grid.Column="0"
                         Margin ="5,0,0,5"
                         Orientation="Horizontal">
-                <Label>Additional RP used: </Label>
+                <Label>Additional RP used:</Label>
                 <TextBox Text="{Binding TotalRP, Mode=OneWay}"
                          Background="{Binding TotalRP, Converter={StaticResource TooHighToBrushConverter}}"
                          IsReadOnly="True"
                          Width="120px"/>
             </StackPanel>
-            
+
             <Label Grid.Row="0"
                    Grid.Column="0"
                    Content="Selected Racial Traits:" />

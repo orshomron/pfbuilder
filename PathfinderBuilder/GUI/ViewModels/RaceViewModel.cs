@@ -286,6 +286,16 @@ namespace GUI.ViewModels
             }
         }
 
+        public int RP
+        {
+            get { return Trait.RP; }
+        }
+
+        public bool HasRP
+        {
+            get { return RP > 0; }
+        }
+
         public void ChangedSelectedTraits()
         {
             OnPropertyChanged("ReplacedTraits");
