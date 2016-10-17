@@ -7,15 +7,38 @@
              xmlns:viewModels="clr-namespace:GUI.ViewModels"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:converters="clr-namespace:GUI.Converters"
+             xmlns:selectors="clr-namespace:GUI.Selectors"
+             xmlns:tooltips="clr-namespace:GUI.Tooltips"
              DataContext="{Binding Source={StaticResource Locator}, Path=ClassesViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800">
     <Grid>
         <Grid.Resources>
             <converters:SubtractConverter x:Key="Subtract135Converter" SubtractAmount="135"/>
+            <converters:SubtractConverter x:Key="Subtract15Converter" SubtractAmount="15"/>
             <converters:SubtractConverter x:Key="Subtract25Converter" SubtractAmount="25"/>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <converters:ArchtypeAvailablilityUsageToBrushConverter x:Key="ArchtypeAvailablilityUsageToBrushConverter" />
+            <converters:BooleanToTransperentBrushConverter x:Key="BooleanToTransperentBrushConverter" />
+
+            <DataTemplate DataType="{x:Type viewModels:ClassViewModel}" x:Key="LabelOnlyClassViewModelTemplate">
+                <Grid>
+                    <Label Content="{Binding Name, Mode=OneWay}" />
+                </Grid>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModels:PrestigeClassViewModel}" x:Key="LabelOnlyPrestigeClassViewModelTemplate">
+                <tooltips:BalloonContainer Caption="{Binding UnmetPrerequisites, Mode=OneWay}" Position="Left">
+                    <Grid Background="{Binding CanUse,Mode=OneWay, Converter={StaticResource BooleanToTransperentBrushConverter}}"
+                      Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBox}}, Path=ActualWidth, Converter={StaticResource Subtract15Converter}}"
+                      Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBox}}, Path=DataContext.ShowPrestigeUnavailable, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Label Content="{Binding Name, Mode=OneWay}">
+                            <Label.ContentStringFormat>{0} (Prestige)</Label.ContentStringFormat>
+                        </Label>
+                    </Grid>
+                </tooltips:BalloonContainer>
+            </DataTemplate>
+
+            <selectors:LabelOnlyClassTemplateSelector  x:Key="LabelOnlyClassTemplateSelector"/>
         </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -36,6 +59,9 @@
             <TextBox Text="{Binding TotalLevel, Mode=OneWay}"
                      Width="120px"
                      IsReadOnly="True" />
+            <Label Content="Show Unavailable Prestige Classes" Margin="15,0,0,0"/>
+            <CheckBox IsChecked="{Binding ShowPrestigeUnavailable}"
+                      VerticalAlignment="Center"/>
         </StackPanel>
 
 
@@ -53,14 +79,8 @@
                  Grid.Column="0"
                  Margin="3,5,7,5"
                  ItemsSource="{Binding AvailableClasses, Mode=OneTime}"
-                 SelectedItem="{Binding SelectedAvailableClass}">
-            <ListBox.ItemTemplate>
-                <DataTemplate DataType="{x:Type viewModels:ClassViewModel}">
-                    <Grid>
-                        <Label Content="{Binding Name, Mode=OneWay}" />
-                    </Grid>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
+                 SelectedItem="{Binding SelectedAvailableClass}"
+                 ItemTemplateSelector="{StaticResource LabelOnlyClassTemplateSelector}">
             <ListBox.ItemContainerStyle>
                 <Style>
                     <Setter Property="xamlExtensions:ControlItemDoubleClick.Command" Value="{Binding DataContext.CreateClassLevelCommand,

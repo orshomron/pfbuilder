@@ -7,11 +7,9 @@ namespace PathfinderBuilder
         IDictionary<Skills, int> SkillAndModifier { get; }
     }
 
-    public interface IAddToSkillDependOnRank
+    public interface IAddToSkillsDependOnRank
     {
-        Skills Skill { get; }
-
-        Dictionary<int, int> LevelCommulativeBonus { get; }
+        Dictionary<Skills, Dictionary<int, int>> LevelCommulativeBonusBySkill { get; }
     }
 
     public interface IDoubleLinguistics

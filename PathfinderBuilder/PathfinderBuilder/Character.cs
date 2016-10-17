@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace PathfinderBuilder
 {
@@ -42,9 +43,17 @@ namespace PathfinderBuilder
 
         public Dictionary<ClassBase, int> Levels { get; set; }
 
+        public List<IFeat> FreeFeats { get; set; }
+
+        public List<IFeat> SelectedFeats { get; set; }
+
+        public IEnumerable<IFeat> AllFeats { get { return FreeFeats.Union(SelectedFeats); } }
+
         public Character()
         {
             Levels = new Dictionary<ClassBase, int>();
+            FreeFeats = new List<IFeat>();
+            SelectedFeats = new List<IFeat>();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using GUI.ViewModels;
+using PathfinderBuilder;
 
 namespace GUI.Commands
 {
@@ -13,7 +14,19 @@ namespace GUI.Commands
 
         public override bool CanExecute(object parameter)
         {
-            return _owner.SelectedAvailableClass != null;
+            if (_owner.SelectedAvailableClass == null)
+            {
+                return false;
+            }
+            
+            var isPrestige = _owner.SelectedAvailableClass.Instance is PrestigeClass;
+            if (isPrestige)
+            {
+                var prestige = _owner.SelectedAvailableClass.Instance as PrestigeClass;
+                return prestige.CanAddClass(_owner.Owner.Character);
+            }
+
+            return true;
         }
 
         public override void Execute(object parameter)

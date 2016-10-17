@@ -98,6 +98,7 @@
     <Compile Include="Commands\CreateClassLevelCommand.cs" />
     <Compile Include="Commands\MoveLanguagesCommand.cs" />
     <Compile Include="Converters\ArchtypeAvailablilityUsageToBrushConverter.cs" />
+    <Compile Include="Converters\BooleanToTransperentBrushConverter.cs" />
     <Compile Include="Converters\ReplacedTraitsToVisibilityConverter.cs" />
     <Compile Include="Converters\TooLowToBrushConverter.cs" />
     <Compile Include="Converters\SubtractConverter.cs" />
@@ -111,6 +112,13 @@
     <Compile Include="Converters\ProficiencyToLabelConverter.cs" />
     <Compile Include="Converters\SumConverter.cs" />
     <Compile Include="MyContainer.cs" />
+    <Compile Include="Selectors\LabelOnlyClassTemplateSelector.cs" />
+    <Compile Include="Tooltips\BalloonContainer.xaml.cs">
+      <DependentUpon>BalloonContainer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tooltips\BalloonWindow.xaml.cs">
+      <DependentUpon>BalloonWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\AbilitiesViewModel.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\CharacterViewModel.cs" />
@@ -148,6 +156,14 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Tooltips\BalloonContainer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tooltips\BalloonWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\AbilitiesUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

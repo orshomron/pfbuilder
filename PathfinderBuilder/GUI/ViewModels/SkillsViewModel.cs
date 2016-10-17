@@ -190,6 +190,7 @@ namespace GUI.ViewModels
         public void SkillRankChanged()
         {
             OnPropertyChanged("CurrentAvailableRanks");
+            _owner.ClassesVM.PrerequestiesMayChanged();
         }
     }
 }

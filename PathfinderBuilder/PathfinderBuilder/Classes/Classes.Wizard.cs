@@ -119,5 +119,7 @@ namespace PathfinderBuilder.Classes
         {
             get { return typeof(WizardArchtypes); }
         }
+
+        public MagicType CasterType { get { return MagicType.Arcane; } }
     }
 }

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Resources;
 using GUI.Commands;
 using PathfinderBuilder;
 using PathfinderBuilder.Classes;
+using PathfinderBuilder.Classes.Prestige;
 
 namespace GUI.ViewModels
 {
@@ -21,6 +23,7 @@ namespace GUI.ViewModels
         private ClassWithLevelViewModel _selectedLevel;
         private ArchtypeViewModel _selectedArchtype;
         private ObservableCollection<ArchtypeViewModel> _currentArchtypes;
+        private bool _showPrestigeUnavailable;
 
         public ClassesViewModel(CharacterViewModel characterViewModel)
         {
@@ -29,6 +32,7 @@ namespace GUI.ViewModels
             {
                 new ClassViewModel(this, new Rogue()),
                 new ClassViewModel(this, new Wizard()),
+                new PrestigeClassViewModel(this, new ArcaneSavant())
             };
             _levels = new ObservableCollection<ClassWithLevelViewModel>();
             _createClassLevelCommand = new CreateClassLevelCommand(this);
@@ -37,6 +41,8 @@ namespace GUI.ViewModels
 
             _owner.RaceVM.PropertyChanged += (sender, args) => UpdatedLevels();
         }
+
+        public CharacterViewModel Owner { get { return _owner; } }
 
         public ObservableCollection<ClassViewModel> AvailableClasses
         {
@@ -135,6 +141,21 @@ namespace GUI.ViewModels
         public AddRemoveArchtypeCommand AddRemoveArchtypeCommand
         {
             get { return _addRemoveArchtypeCommand; }
+        }
+
+        public bool ShowPrestigeUnavailable
+        {
+            get { return _showPrestigeUnavailable; }
+            set
+            {
+                _showPrestigeUnavailable = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public void PrerequestiesMayChanged()
+        {
+            OnPropertyChanged("ShowPrestigeUnavailable");
         }
     }
 
@@ -243,5 +264,40 @@ namespace GUI.ViewModels
         public string Name { get { return ClassInstance.ClassName; } }
 
         public ClassBase Instance { get { return ClassInstance; } }
+    }
+
+    public class PrestigeClassViewModel : ClassViewModel
+    {
+        protected new PrestigeClass ClassInstance;
+
+        public PrestigeClassViewModel(ClassesViewModel owner, PrestigeClass classInstance)
+            : base(owner, classInstance)
+        {
+            ClassInstance = classInstance;
+            Register();
+        }
+
+        private void Register()
+        {
+            Owner.PropertyChanged += PropChanged;
+        }
+
+        private void PropChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            OnPropertyChanged("CanUse");
+            OnPropertyChanged("UnmetPrerequisites");
+        }
+
+        public new PrestigeClass Instance { get { return ClassInstance; } }
+
+        public bool CanUse { get { return Instance.CanAddClass(Owner.Owner.Character); } }
+
+        public string UnmetPrerequisites
+        {
+            get
+            {
+                return string.Join("; ", Instance.Prerequisites.Where(p => !p.CanUse(Owner.Owner.Character)).Select(p => p.NotMetText));
+            }
+        }
     }
 }

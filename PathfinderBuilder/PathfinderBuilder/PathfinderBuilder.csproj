@@ -50,6 +50,7 @@
     <Compile Include="Character.cs" />
     <Compile Include="Classes.cs" />
     <Compile Include="Classes\Classes.Rogue.cs" />
+    <Compile Include="Classes\Prestige\ArcaneSavant.cs" />
     <Compile Include="CombatAbility.cs" />
     <Compile Include="Duration.cs" />
     <Compile Include="Races\Dwarf.cs" />

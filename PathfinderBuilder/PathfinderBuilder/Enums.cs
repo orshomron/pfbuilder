@@ -317,4 +317,11 @@ namespace PathfinderBuilder
         Unknown,
         Other
     }
+
+    public enum MagicType
+    {
+        Divine,
+        Arcane,
+        Existing
+    }
 }
