@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/PathfinderBuilder/GUI/obj/Debug
+/PathfinderBuilder/GUI/bin/Debug
+/PathfinderBuilder/packages
+/PathfinderBuilder/PathfinderBuilder/obj/Debug
+/PathfinderBuilder/PathfinderBuilder/bin/Debug
