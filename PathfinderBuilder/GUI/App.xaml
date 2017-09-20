@@ -8,10 +8,7 @@
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                
-            </ResourceDictionary.MergedDictionaries>
-            <gui:MyContainer x:Key="Locator" d:IsDataSource="True" />
+            <gui:MyContainer x:Key="Locator" d:IsDataSource="True"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

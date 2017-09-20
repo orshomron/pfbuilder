@@ -4,50 +4,31 @@ namespace GUI.ViewModels
 {
     public class CharacterViewModel : BaseViewModel
     {
-        private readonly AbilitiesViewModel _abilitiesVM;
-        private readonly RaceViewModel _raceVM;
-        private readonly SkillsViewModel _skillsVM;
-        private readonly LanguagesViewModel _languagesVM;
-        private readonly Character _character;
-        private readonly ClassesViewModel _classesViewModel;
+        public RaceViewModel RaceVM { get; }
 
-        public RaceViewModel RaceVM
-        {
-            get { return _raceVM; }
-        }
+        public ClassesViewModel ClassesVM { get; }
 
-        public ClassesViewModel ClassesVM
-        {
-            get { return _classesViewModel; }
-        }
+        public SkillsViewModel SkillsVM { get; }
 
-        public SkillsViewModel SkillsVM
-        {
-            get { return _skillsVM; }
-        }
+        public AbilitiesViewModel AbilitiesVM { get; }
 
-        public AbilitiesViewModel AbilitiesVM
-        {
-            get { return _abilitiesVM; }
-        }
+        public LanguagesViewModel LanguagesVM { get; }
 
-        public LanguagesViewModel LanguagesVM
-        {
-            get { return _languagesVM; }
-        }
+        public FeatsViewModel FeatsVM { get; }
 
-        public Character Character { get { return _character; } }
+        public Character Character { get; }
 
         public CharacterViewModel()
         {
-            _character = new Character();
+            Character = new Character();
 
-            _raceVM = new RaceViewModel(this);
-            _abilitiesVM = new AbilitiesViewModel(this);
-            _classesViewModel = new ClassesViewModel(this);
-            _skillsVM = new SkillsViewModel(this);
-            _languagesVM = new LanguagesViewModel(this);
-            
+            RaceVM = new RaceViewModel(this);
+            AbilitiesVM = new AbilitiesViewModel(this);
+            ClassesVM = new ClassesViewModel(this);
+            SkillsVM = new SkillsViewModel(this);
+            FeatsVM = new FeatsViewModel(this);
+            LanguagesVM = new LanguagesViewModel(this);
+
         }
 
     }

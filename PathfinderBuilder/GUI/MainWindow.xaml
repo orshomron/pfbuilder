@@ -24,6 +24,9 @@
             <TabItem Header="Skills">
                 <views:SkillsUserControl DataContext="{Binding SkillsVM, Mode=OneTime}"/>
             </TabItem>
+            <TabItem Header="Feats">
+                <views:FeatsUserControl DataContext="{Binding FeatsVM, Mode=OneTime}"/>
+            </TabItem>
             <TabItem Header="Languages">
                 <views:LangaugesUserControl DataContext="{Binding LanguagesVM, Mode=OneTime}"/>
             </TabItem>

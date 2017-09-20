@@ -86,5 +86,16 @@ namespace GUI
                 return _container.Resolve<AbilitiesViewModel>();
             }
         }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance",
+            "CA1822:MarkMembersAsStatic",
+            Justification = "This non-static member is needed for data binding purposes.")]
+        public FeatsViewModel FeatsViewModel
+        {
+            get
+            {
+                return _container.Resolve<FeatsViewModel>();
+            }
+        }
     }
 }

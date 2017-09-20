@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using PathfinderBuilder.Feats;
 
 namespace PathfinderBuilder.Classes
 {
@@ -40,7 +41,12 @@ namespace PathfinderBuilder.Classes
         private static readonly List<Skills> StaticClassSkills = new List<Skills>
         {
             Skills.Appraise,
-            Skills.Craft,
+            Skills.CraftMisc,
+            Skills.CraftAlcehmy,
+            Skills.CraftWeapons,
+            Skills.CraftTraps,
+            Skills.CraftBows,
+            Skills.CraftArmor,
             Skills.Fly,
             Skills.KnowledgeArcane,
             Skills.KnowledgeDungeoneering,
@@ -57,7 +63,7 @@ namespace PathfinderBuilder.Classes
 
         private static readonly List<IFeat> StaticStartingFeats = new List<IFeat>
         {
-            new MagicItemCreationFeat(new CasterLevelPrerequisite(1), "Scribe Scroll", "You can create a scroll of any spell that you know")
+            new ScribeScrollFeat()
         };
 
         private readonly List<object> _myArchtypes = Enum.GetValues(typeof(WizardArchtypes)).Cast<WizardArchtypes>().Where(a => a != WizardArchtypes.Vanilla).Cast<object>().ToList();

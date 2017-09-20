@@ -133,15 +133,15 @@ namespace GUI.ViewModels
 
             foreach (Skills skill in Enum.GetValues(typeof(SkillEnum)))
             {
-                if (skill != SkillEnum.Craft && skill != SkillEnum.Perform && skill != SkillEnum.Profession)
+                if (skill != SkillEnum.CraftMisc && skill != SkillEnum.Perform && skill != SkillEnum.Profession && skill != SkillEnum.INVALID)
                 {
                     tmp.Add(new SkillViewModel(this, skill, false));
                 }
             }
 
-            tmp.Add(new SkillWithSubcategoryViewModel(this, SkillEnum.Craft, false));
-            tmp.Add(new SkillWithSubcategoryViewModel(this, SkillEnum.Craft, false));
-            tmp.Add(new SkillWithSubcategoryViewModel(this, SkillEnum.Craft, false));
+            tmp.Add(new SkillWithSubcategoryViewModel(this, SkillEnum.CraftMisc, false));
+            tmp.Add(new SkillWithSubcategoryViewModel(this, SkillEnum.CraftMisc, false));
+            tmp.Add(new SkillWithSubcategoryViewModel(this, SkillEnum.CraftMisc, false));
 
             tmp.Add(new SkillWithSubcategoryViewModel(this, SkillEnum.Perform, false));
             tmp.Add(new SkillWithSubcategoryViewModel(this, SkillEnum.Perform, false));

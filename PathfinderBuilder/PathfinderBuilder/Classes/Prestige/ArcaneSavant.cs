@@ -21,21 +21,26 @@ namespace PathfinderBuilder.Classes.Prestige
         private readonly List<Skills> _myClassSkills = new List<Skills>
         {
             Skills.Appraise,
-           Skills.Craft,
-           Skills.KnowledgeArcane,
-           Skills.KnowledgeDungeoneering,
-           Skills.KnowledgeHistory,
-           Skills.KnowledgeLocal,
-           Skills.KnowledgeNature,
-           Skills.KnowledgeNobility,
-           Skills.KnowledgePlanes,
-           Skills.KnowledgeReligion,
-           Skills.Linguistics,
-           Skills.Perception,
-           Skills.Profession,
-           Skills.Spellcraft,
-           Skills.Survival,
-           Skills.UseMagicDevice
+            Skills.CraftMisc,
+            Skills.CraftAlcehmy,
+            Skills.CraftWeapons,
+            Skills.CraftTraps,
+            Skills.CraftBows,
+            Skills.CraftArmor,
+            Skills.KnowledgeArcane,
+            Skills.KnowledgeDungeoneering,
+            Skills.KnowledgeHistory,
+            Skills.KnowledgeLocal,
+            Skills.KnowledgeNature,
+            Skills.KnowledgeNobility,
+            Skills.KnowledgePlanes,
+            Skills.KnowledgeReligion,
+            Skills.Linguistics,
+            Skills.Perception,
+            Skills.Profession,
+            Skills.Spellcraft,
+            Skills.Survival,
+            Skills.UseMagicDevice
         };
         private readonly List<IFeat> _myStartingFeats = new List<IFeat>();
 

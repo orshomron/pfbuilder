@@ -11,6 +11,18 @@ namespace PathfinderBuilder
         string NotMetText { get; }
     }
 
+    public class SpecialPrerequisite : IPrerequisite
+    {
+        public bool CanUse(Character character)
+        {
+            // TODO: add handling this thingie
+
+            return true;
+        }
+
+        public string NotMetText { get; } = string.Empty;
+    }
+
     public class SkillRankPrerequisite : IPrerequisite
     {
         private readonly Skills _skill;
@@ -111,6 +123,11 @@ namespace PathfinderBuilder
         private readonly ICollection<IPrerequisite> _prerequisites;
 
         public ComplexPrerequisite(ICollection<IPrerequisite> prerequisites)
+        {
+            _prerequisites = prerequisites;
+        }
+
+        public ComplexPrerequisite(params IPrerequisite[] prerequisites)
         {
             _prerequisites = prerequisites;
         }

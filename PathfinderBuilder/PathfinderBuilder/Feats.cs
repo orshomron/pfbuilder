@@ -11,6 +11,13 @@ namespace PathfinderBuilder
         string Description { get; }
     }
 
+    public interface IFeatWithSkillSelection : IFeat
+    {
+        void SetSkill(Skills skill);
+        Skills Skill { get; }
+        string NameWithoutSkill { get; }
+    }
+
     public interface IItemCreationFeat : IFeat
     {
 
@@ -26,7 +33,7 @@ namespace PathfinderBuilder
 
     }
 
-    public class SkillFocus : IFeat, IAddToSkillsDependOnRank
+    public class SkillFocus : IFeatWithSkillSelection, IAddToSkillsDependOnRank
     {
         private static readonly Dictionary<int, int> Bonuses = new Dictionary<int, int> { { 0, 3 }, { 10, 3 } };
 
@@ -35,10 +42,26 @@ namespace PathfinderBuilder
             LevelCommulativeBonusBySkill = new Dictionary<Skills, Dictionary<int, int>> { { skill, Bonuses } };
         }
 
+        public SkillFocus()
+        {
+
+        }
+
         public IPrerequisite Prerequisite { get { return NoPrerequisite.Instance; } }
-        public string Name { get { return string.Format("Skill Focus [{0}]", EnumHelper.GetDescription(typeof(Skills), LevelCommulativeBonusBySkill.First().Key)); } }
+
+        public string Name => Skill == Skills.INVALID ? NameWithoutSkill : $"Skill Focus [{EnumHelper.GetDescription(typeof(Skills), Skill)}]";
+
         public string Description { get { return "+3 bonus on skill. additional +3 if 10 ranks or more."; } }
         public Dictionary<Skills, Dictionary<int, int>> LevelCommulativeBonusBySkill { get; private set; }
+
+        public void SetSkill(Skills skill)
+        {
+            LevelCommulativeBonusBySkill = new Dictionary<Skills, Dictionary<int, int>> { { skill, Bonuses } };
+            Skill = skill;
+        }
+
+        public Skills Skill { get; private set; } = Skills.INVALID;
+        public string NameWithoutSkill { get; } = "Skill Focus";
     }
 
     public class MagicalAptitudeFeat : IFeat, IAddToSkillsDependOnRank
@@ -56,20 +79,6 @@ namespace PathfinderBuilder
         public Dictionary<Skills, Dictionary<int, int>> LevelCommulativeBonusBySkill { get; private set; }
     }
 
-    public class MagicItemCreationFeat : IItemCreationFeat
-    {
-        public MagicItemCreationFeat(IPrerequisite prerequisite, string name, string description)
-        {
-            Prerequisite = prerequisite;
-            Name = name;
-            Description = description;
-        }
-
-        public IPrerequisite Prerequisite { get; private set; }
-        public string Name { get; private set; }
-        public string Description { get; private set; }
-    }
-
     public class Dodge : IFeat, IAddDodgeBonus
     {
         public Dodge()
@@ -81,37 +90,5 @@ namespace PathfinderBuilder
         public string Name { get { return "Dodge"; } }
         public string Description { get { return "+1 Dodge AC bonus"; } }
         public int DodgeBonus { get { return 1; } }
-    }
-
-    public class Feat : FluffyEntity
-    {
-        public WeaponGroup WeaponProficiencyGiven { get; set; }
-
-        public ArmorGroup ArmorProficiencyGiven { get; set; }
-
-        public virtual ICollection<SkillPointPair> SkillBonuses { get; set; }
-
-        public virtual ICollection<SkillPointPair> SkillPrerequests { get; set; }
-
-        public virtual ICollection<Guid> FeatPrerequestsIds { get; set; }
-
-        public virtual ICollection<Guid> PrerequsiteClassIds { get; set; }
-
-        public virtual ICollection<NonCombatAbility> NonCombatAbilityGivenIds { get; set; }
-
-        public virtual ICollection<CombatAbility> CombatAbilityGivenIds { get; set; }
-
-        public int MinBaseAtkBonus { get; set; }
-
-        public int MinLevelInClass { get; set; }
-
-        public MagicSchool SpecificSchool { get; set; }
-
-        public int MinStr { get; set; }
-        public int MinDex { get; set; }
-        public int MinCon { get; set; }
-        public int MinInt { get; set; }
-        public int MinWis { get; set; }
-        public int MinCha { get; set; }
     }
 }

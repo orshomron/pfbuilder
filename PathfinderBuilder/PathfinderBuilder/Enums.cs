@@ -21,7 +21,12 @@ namespace PathfinderBuilder
                 case Skills.Stealth:
                     return Attributes.Dexterity;
                 case Skills.Appraise:
-                case Skills.Craft:
+                case Skills.CraftMisc:
+                case Skills.CraftAlcehmy:
+                case Skills.CraftWeapons:
+                case Skills.CraftTraps:
+                case Skills.CraftBows:
+                case Skills.CraftArmor:
                 case Skills.KnowledgeArcane:
                 case Skills.KnowledgeReligion:
                 case Skills.KnowledgePlanes:
@@ -47,6 +52,8 @@ namespace PathfinderBuilder
                 case Skills.Perform:
                 case Skills.UseMagicDevice:
                     return Attributes.Charisma;
+                case Skills.INVALID:
+                    return Attributes.INVALID;
                 default:
                     throw new ArgumentException("Unknown attribute for skill: " + skill, "skill");
             }
@@ -205,7 +212,9 @@ namespace PathfinderBuilder
         Constitution,
         Intelligence,
         Wisdom,
-        Charisma
+        Charisma,
+
+        INVALID = 99999
     }
 
     public enum SpellComponents
@@ -232,7 +241,9 @@ namespace PathfinderBuilder
         Electricity,
         Acid,
         Sonic,
-        Physical
+        Physical,
+        Negative,
+        Positive
     }
 
     public enum Skills
@@ -242,7 +253,18 @@ namespace PathfinderBuilder
         Appraise,
         Bluff,
         Climb,
-        Craft,
+        [Display(ShortName = "Craft (Alcehmy)")]
+        CraftAlcehmy,
+        [Display(ShortName = "Craft (Armor)")]
+        CraftArmor,
+        [Display(ShortName = "Craft (Bows)")]
+        CraftBows,
+        [Display(ShortName = "Craft (Weapons)")]
+        CraftWeapons,
+        [Display(ShortName = "Craft (Traps)")]
+        CraftTraps,
+        [Display(ShortName = "Craft")]
+        CraftMisc,
         Diplomacy,
         [Display(ShortName = "Disable Device")]
         DisableDevice,
@@ -285,6 +307,8 @@ namespace PathfinderBuilder
         Swim,
         [Display(ShortName = "Use Magic Device")]
         UseMagicDevice,
+
+        INVALID = 99999
     }
 
     public enum PointBuyOptions

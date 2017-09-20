@@ -90,6 +90,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Commands\AddFeatCommand.cs" />
     <Compile Include="Commands\AddRemoveArchtypeCommand.cs" />
     <Compile Include="Commands\BaseCommand.cs" />
     <Compile Include="Commands\RemoveRacialTraitCommand.cs" />
@@ -112,6 +113,7 @@
     <Compile Include="Converters\ProficiencyToLabelConverter.cs" />
     <Compile Include="Converters\SumConverter.cs" />
     <Compile Include="MyContainer.cs" />
+    <Compile Include="Selectors\FeatViewSelector.cs" />
     <Compile Include="Selectors\LabelOnlyClassTemplateSelector.cs" />
     <Compile Include="Tooltips\BalloonContainer.xaml.cs">
       <DependentUpon>BalloonContainer.xaml</DependentUpon>
@@ -123,6 +125,7 @@
     <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\CharacterViewModel.cs" />
     <Compile Include="ViewModels\ClassesViewModel.cs" />
+    <Compile Include="ViewModels\FeatsViewModel.cs" />
     <Compile Include="ViewModels\LanguagesViewModel.cs" />
     <Compile Include="ViewModels\RaceViewModel.cs" />
     <Compile Include="ViewModels\SkillsViewModel.cs" />
@@ -131,6 +134,9 @@
     </Compile>
     <Compile Include="Views\ClassesUserControl.xaml.cs">
       <DependentUpon>ClassesUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FeatsUserControl.xaml.cs">
+      <DependentUpon>FeatsUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\LangaugesUserControl.xaml.cs">
       <DependentUpon>LangaugesUserControl.xaml</DependentUpon>
@@ -169,6 +175,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ClassesUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\FeatsUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

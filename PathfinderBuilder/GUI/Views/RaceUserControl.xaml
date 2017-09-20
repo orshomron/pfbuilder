@@ -9,8 +9,7 @@
              DataContext="{Binding Source={StaticResource Locator}, Path=RaceViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="600" 
-             d:DesignWidth="800"
-             Background="White">
+             d:DesignWidth="800">
     <UserControl.Resources>
         <converters:EnumMatchToBooleanConverter x:Key="EnumToBooleanConverter" />
         <converters:SubtractConverter SubtractAmount="15" x:Key="Subtract15Converter" />

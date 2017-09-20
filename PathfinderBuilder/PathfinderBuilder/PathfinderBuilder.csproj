@@ -53,6 +53,7 @@
     <Compile Include="Classes\Prestige\ArcaneSavant.cs" />
     <Compile Include="CombatAbility.cs" />
     <Compile Include="Duration.cs" />
+    <Compile Include="Feats\ItemCreation.cs" />
     <Compile Include="Races\Dwarf.cs" />
     <Compile Include="EnumHelper.cs" />
     <Compile Include="Enums.cs" />

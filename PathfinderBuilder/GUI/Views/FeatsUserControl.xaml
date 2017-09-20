@@ -1,0 +1,57 @@
+﻿<UserControl x:Class="GUI.Views.FeatsUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewModels="clr-namespace:GUI.ViewModels"
+             xmlns:selectors="clr-namespace:GUI.Selectors"
+             xmlns:xamlExtensions="clr-namespace:GUI.XAMLExtensions"
+             mc:Ignorable="d" 
+             DataContext="{Binding Source={StaticResource Locator}, Path=FeatsViewModel}"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <Grid.Resources>
+            <DataTemplate DataType="{x:Type viewModels:FeatViewModel}" x:Key="SimpleFeatTemplate">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="240" />
+                        <ColumnDefinition Width="240" />
+                        <ColumnDefinition Width="240" />
+                    </Grid.ColumnDefinitions>
+                    <Label Content="{Binding Name}"
+                       Grid.Column="0"/>
+                    <Label Content="{Binding PrerequisiteNeeded}"
+                       Grid.Column="2"/>
+                </Grid>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModels:FeatWithSkillSelectionViewModel}" x:Key="SkillSelectFeatTemplate">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="240" />
+                        <ColumnDefinition Width="240" />
+                        <ColumnDefinition Width="240" />
+                    </Grid.ColumnDefinitions>
+                    <Label Content="{Binding Name}"
+                       Grid.Column="0"/>
+                    <ComboBox Grid.Column="1" 
+                              SelectedItem="{Binding Skill}"
+                              ItemsSource="{Binding SkillList}"/>
+                    <Label Content="{Binding PrerequisiteNeeded}"
+                       Grid.Column="2"/>
+                </Grid>
+            </DataTemplate>
+            <selectors:FeatViewSelector x:Key="FeatViewSelector" />
+        </Grid.Resources>
+        <ListBox ItemsSource="{Binding AvailableFeats}" 
+                 ItemTemplateSelector="{StaticResource FeatViewSelector}"
+                 SelectedItem="{Binding SelectedFeat}">
+            <ListBox.ItemContainerStyle>
+                <Style>
+                    <Setter Property="xamlExtensions:ControlItemDoubleClick.Command" Value="{Binding DataContext.AddFeatCommand,
+                                    RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, 
+                                    Mode=OneTime}"/>
+                </Style>
+            </ListBox.ItemContainerStyle>
+        </ListBox>
+    </Grid>
+</UserControl>
