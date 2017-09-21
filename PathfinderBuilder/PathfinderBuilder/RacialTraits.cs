@@ -51,7 +51,7 @@ namespace PathfinderBuilder
         public string Description { get; private set; }
         public object TraitCategory { get; private set; }
         public Type CategoryType { get; private set; }
-        public int RP { get;  set; }
+        public int RP { get; set; }
         public int SkillPointsPerLevel { get; private set; }
     }
 
@@ -72,6 +72,27 @@ namespace PathfinderBuilder
         public Type CategoryType { get; private set; }
         public int RP { get; set; }
     }
+
+    public class AddOptionalAbilityModifiersRacialTrait : IRacialTrait, IAddOptionalAbilityModifier
+    {
+
+        public AddOptionalAbilityModifiersRacialTrait(string name, string description, Type categoryType, int number, object traitCategory = null)
+        {
+            CategoryType = categoryType;
+            Name = name;
+            Description = description;
+            Number = number;
+            TraitCategory = traitCategory ?? BaseRacialTraits.None;
+        }
+
+        public string Name { get; private set; }
+        public string Description { get; private set; }
+        public object TraitCategory { get; private set; }
+        public Type CategoryType { get; private set; }
+        public int RP { get; set; }
+        public int Number { get; }
+    }
+
 
     public class LowLightVisionRacialTrait : IRacialTrait, ILowLightVision
     {

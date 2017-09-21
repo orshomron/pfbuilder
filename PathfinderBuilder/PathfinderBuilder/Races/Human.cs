@@ -25,7 +25,7 @@ namespace PathfinderBuilder.Races
             const RacialTraitsCategories bonusFeatCategory = RacialTraitsCategories.BonusFeat;
             var enumType = typeof(RacialTraitsCategories);
 
-            var skilledTrait = new AddSkillPointsPerLevelRacialTrait("Skilled", "additional skill point per level", 1, enumType, skilledCategory);
+            var skilledTrait = new AddSkillPointsPerLevelRacialTrait("Skilled", "Additional skill point per level", 1, enumType, skilledCategory);
             var bonusFeatTrait = new FeatsAtFirstLevelRacialTrait("Bonus Feat", "Humans select one extra feat at 1st level", 1, enumType, bonusFeatCategory);
 
             SelectedTraits.Add(skilledTrait);
@@ -35,7 +35,7 @@ namespace PathfinderBuilder.Races
             var aquaticAncestry = new SimpleRacialTrait("Aquatic Ancestry", "", enumType, skilledCategory);
             var awareness = new SimpleRacialTrait("Awareness", "", enumType, bonusFeatCategory);
             var comprehensiveEducation = new SimpleRacialTrait("Comprehensive Education", "", enumType, skilledCategory);
-            var dualTalent = new SimpleRacialTrait("Dual Talent", "", enumType, bonusFeatCategory | skilledCategory);
+            var dualTalent = new AddOptionalAbilityModifiersRacialTrait("Dual Talent", "Select an additional ability score to recieve a +2 bonus", enumType, 1, bonusFeatCategory | skilledCategory);
             var dimdweller = new SimpleRacialTrait("Dimdweller", string.Empty, enumType) { RP = 2 };
             var draconicHeritage = new SimpleRacialTrait("Draconic Heritage", string.Empty, enumType, skilledCategory) { RP = 4 };
             var dragonScholar = new SimpleRacialTrait("Dragon Scholar", string.Empty, enumType, bonusFeatCategory) { RP = 4 };
@@ -140,46 +140,27 @@ namespace PathfinderBuilder.Races
             get { return new List<string> { "Human" }; }
         }
 
-        public override bool RaceHasOptionalAbilityModifier
-        {
-            get { return true; }
-        }
+        public override bool RaceHasOptionalAbilityModifier => true;
 
-        public override int StrengthModifier
-        {
-            get { return SelectedAttribute == Attributes.Strength ? 2 : 0; }
-        }
+        public override int StrengthModifier => AttributesWithModifier.Contains(Attributes.Strength) ? 2 : 0;
 
-        public override int DexterityModifier
-        {
-            get { return SelectedAttribute == Attributes.Dexterity ? 2 : 0; }
-        }
+        public override int DexterityModifier => AttributesWithModifier.Contains(Attributes.Dexterity) ? 2 : 0;
 
-        public override int ConstitutionModifier
-        {
-            get { return SelectedAttribute == Attributes.Constitution ? 2 : 0; }
-        }
+        public override int ConstitutionModifier => AttributesWithModifier.Contains(Attributes.Constitution) ? 2 : 0;
 
-        public override int IntelligenceModifier
-        {
-            get { return SelectedAttribute == Attributes.Intelligence ? 2 : 0; }
-        }
+        public override int IntelligenceModifier => AttributesWithModifier.Contains(Attributes.Intelligence) ? 2 : 0;
 
-        public override int WisdomModifier
-        {
-            get { return SelectedAttribute == Attributes.Wisdom ? 2 : 0; }
-        }
+        public override int WisdomModifier => AttributesWithModifier.Contains(Attributes.Wisdom) ? 2 : 0;
 
-        public override int CharismaModifier
-        {
-            get { return SelectedAttribute == Attributes.Charisma ? 2 : 0; }
-        }
+        public override int CharismaModifier => AttributesWithModifier.Contains(Attributes.Charisma) ? 2 : 0;
 
         public override string RaceName
         {
             get { return "Human"; }
         }
 
-        public Attributes SelectedAttribute { get; set; }
+        public HashSet<Attributes> AttributesWithModifier { get; } = new HashSet<Attributes>();
+
+        public int NumberOfAttributes => 1 + SelectedTraits.Sum(t => (t as IAddOptionalAbilityModifier)?.Number ?? 0);
     }
 }

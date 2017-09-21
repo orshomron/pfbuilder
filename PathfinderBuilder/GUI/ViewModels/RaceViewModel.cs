@@ -16,6 +16,13 @@ namespace GUI.ViewModels
         private ObservableCollection<GenericRacialTraitViewModel> _selectedTraits;
         private GenericRacialTraitViewModel _selectedAvailableTrait;
         private GenericRacialTraitViewModel _selectedSelectedTrait;
+        private int _numSelectedOptionalAbilityModifiers;
+        private bool _optionalStrengthChecked,
+            _optionalDexterityChecked,
+            _optionalConstitutionChecked,
+            _optionalIntelligenceChecked,
+            _optionalWisdomChecked,
+            _optionalCharismaChecked;
 
         public RaceViewModel(Character c) : base(c)
         {
@@ -42,37 +49,184 @@ namespace GUI.ViewModels
 
         public int StrengthModifier => Model.Race.StrengthModifier;
 
-        public Attributes SelectedOptionalAbilityModifier
+        public bool RaceHasOptionalAbilityModifier => Model.Race.RaceHasOptionalAbilityModifier;
+
+        public int NumOptionalAbilityModifiers => (Model.Race as IRaceWithOptionalAbilityModifier)?.NumberOfAttributes ?? 0;
+
+        public int NumOptionalAbilityModifiersLeftToChoose => NumOptionalAbilityModifiers - NumSelectedOptionalAbilityModifiers;
+
+        public bool OptionalStrengthChecked
         {
-            get
-            {
-                var raceOptional = Race as IRaceWithOptionalAbilityModifier;
-                if (raceOptional == null)
-                {
-                    return Attributes.Strength;
-                }
-                return raceOptional.SelectedAttribute;
-            }
+            get { return _optionalStrengthChecked; }
             set
             {
-                var raceOptional = Race as IRaceWithOptionalAbilityModifier;
-                if (raceOptional == null)
+                if (value == _optionalStrengthChecked)
                 {
-                    throw new ArgumentException("Invalid race recieved at optional ability modifier race");
+                    return;
                 }
-                raceOptional.SelectedAttribute = value;
-                OnPropertyChanged();
+                _optionalStrengthChecked = value;
+                var race = Model.Race as IRaceWithOptionalAbilityModifier;
+                if (value) // was false before
+                {
+                    NumSelectedOptionalAbilityModifiers++;
+                    race.AttributesWithModifier.Add(Attributes.Strength);
+                }
+                else
+                {
+                    NumSelectedOptionalAbilityModifiers = Math.Max(0, NumSelectedOptionalAbilityModifiers - 1);
+                    race.AttributesWithModifier.Remove(Attributes.Strength);
+                }
                 OnPropertyChanged(nameof(StrengthModifier));
-                OnPropertyChanged(nameof(DexterityModifier));
-                OnPropertyChanged(nameof(ConstitutionModifier));
-                OnPropertyChanged(nameof(IntelligenceModifier));
-                OnPropertyChanged(nameof(WisdomModifier));
-                OnPropertyChanged(nameof(CharismaModifier));
                 OnPropertyChanged(nameof(AbilityModifiersString));
+                OnPropertyChanged();
             }
         }
 
-        public bool RaceHasOptionalAbilityModifier => Model.Race.RaceHasOptionalAbilityModifier;
+        public bool OptionalDexterityChecked
+        {
+            get { return _optionalDexterityChecked; }
+            set
+            {
+                if (value == _optionalDexterityChecked)
+                {
+                    return;
+                }
+                _optionalDexterityChecked = value;
+                var race = Model.Race as IRaceWithOptionalAbilityModifier;
+                if (value) // was false before
+                {
+                    NumSelectedOptionalAbilityModifiers++;
+                    race?.AttributesWithModifier.Add(Attributes.Dexterity);
+                }
+                else
+                {
+                    NumSelectedOptionalAbilityModifiers = Math.Max(0, NumSelectedOptionalAbilityModifiers - 1);
+                    race?.AttributesWithModifier.Remove(Attributes.Dexterity);
+                }
+                OnPropertyChanged(nameof(DexterityModifier));
+                OnPropertyChanged(nameof(AbilityModifiersString));
+                OnPropertyChanged();
+            }
+        }
+
+        public bool OptionalConstitutionChecked
+        {
+            get { return _optionalConstitutionChecked; }
+            set
+            {
+                if (value == _optionalConstitutionChecked)
+                {
+                    return;
+                }
+                _optionalConstitutionChecked = value;
+                var race = Model.Race as IRaceWithOptionalAbilityModifier;
+                if (value) // was false before
+                {
+                    NumSelectedOptionalAbilityModifiers++;
+                    race?.AttributesWithModifier.Add(Attributes.Constitution);
+                }
+                else
+                {
+                    NumSelectedOptionalAbilityModifiers = Math.Max(0, NumSelectedOptionalAbilityModifiers - 1);
+                    race?.AttributesWithModifier.Remove(Attributes.Constitution);
+                }
+                OnPropertyChanged(nameof(ConstitutionModifier));
+                OnPropertyChanged(nameof(AbilityModifiersString));
+                OnPropertyChanged();
+            }
+        }
+
+        public bool OptionalIntelligenceChecked
+        {
+            get { return _optionalIntelligenceChecked; }
+            set
+            {
+                if (value == _optionalIntelligenceChecked)
+                {
+                    return;
+                }
+                _optionalIntelligenceChecked = value;
+                var race = Model.Race as IRaceWithOptionalAbilityModifier;
+                if (value) // was false before
+                {
+                    NumSelectedOptionalAbilityModifiers++;
+                    race?.AttributesWithModifier.Add(Attributes.Intelligence);
+                }
+                else
+                {
+                    NumSelectedOptionalAbilityModifiers = Math.Max(0, NumSelectedOptionalAbilityModifiers - 1);
+                    race?.AttributesWithModifier.Remove(Attributes.Intelligence);
+                }
+                OnPropertyChanged(nameof(IntelligenceModifier));
+                OnPropertyChanged(nameof(AbilityModifiersString));
+                OnPropertyChanged();
+            }
+        }
+
+        public bool OptionalWisdomChecked
+        {
+            get { return _optionalWisdomChecked; }
+            set
+            {
+                if (value == _optionalWisdomChecked)
+                {
+                    return;
+                }
+                _optionalWisdomChecked = value;
+                var race = Model.Race as IRaceWithOptionalAbilityModifier;
+                if (value) // was false before
+                {
+                    NumSelectedOptionalAbilityModifiers++;
+                    race?.AttributesWithModifier.Add(Attributes.Wisdom);
+                }
+                else
+                {
+                    NumSelectedOptionalAbilityModifiers = Math.Max(0, NumSelectedOptionalAbilityModifiers - 1);
+                    race?.AttributesWithModifier.Remove(Attributes.Wisdom);
+                }
+                OnPropertyChanged(nameof(WisdomModifier));
+                OnPropertyChanged(nameof(AbilityModifiersString));
+                OnPropertyChanged();
+            }
+        }
+
+        public bool OptionalCharismaChecked
+        {
+            get { return _optionalCharismaChecked; }
+            set
+            {
+                if (value == _optionalCharismaChecked)
+                {
+                    return;
+                }
+                _optionalCharismaChecked = value;
+                var race = Model.Race as IRaceWithOptionalAbilityModifier;
+                if (value) // was false before
+                {
+                    NumSelectedOptionalAbilityModifiers++;
+                    race?.AttributesWithModifier.Add(Attributes.Charisma);
+                }
+                else
+                {
+                    NumSelectedOptionalAbilityModifiers = Math.Max(0, NumSelectedOptionalAbilityModifiers - 1);
+                    race?.AttributesWithModifier.Remove(Attributes.Charisma);
+                }
+                OnPropertyChanged(nameof(CharismaModifier));
+                OnPropertyChanged(nameof(AbilityModifiersString));
+                OnPropertyChanged();
+            }
+        }
+
+        public int NumSelectedOptionalAbilityModifiers
+        {
+            get { return _numSelectedOptionalAbilityModifiers; }
+            set
+            {
+                _numSelectedOptionalAbilityModifiers = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(NumOptionalAbilityModifiersLeftToChoose));
+            }
+        }
 
         public Race Race
         {
@@ -99,6 +253,13 @@ namespace GUI.ViewModels
                 _selectedTraits.CollectionChanged += TraitsChanged;
                 _availableTraits.CollectionChanged += TraitsChanged;
 
+                OptionalStrengthChecked = false;
+                OptionalDexterityChecked = false;
+                OptionalConstitutionChecked = false;
+                OptionalIntelligenceChecked = false;
+                OptionalWisdomChecked = false;
+                OptionalCharismaChecked = false;
+
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(RaceHasOptionalAbilityModifier));
                 OnPropertyChanged(nameof(StrengthModifier));
@@ -107,11 +268,12 @@ namespace GUI.ViewModels
                 OnPropertyChanged(nameof(IntelligenceModifier));
                 OnPropertyChanged(nameof(WisdomModifier));
                 OnPropertyChanged(nameof(CharismaModifier));
-                OnPropertyChanged(nameof(SelectedOptionalAbilityModifier));
                 OnPropertyChanged(nameof(Size));
                 OnPropertyChanged(nameof(AbilityModifiersString));
                 OnPropertyChanged(nameof(SelectedTraits));
                 OnPropertyChanged(nameof(AvailableTraits));
+                OnPropertyChanged(nameof(NumOptionalAbilityModifiers));
+                OnPropertyChanged(nameof(NumOptionalAbilityModifiersLeftToChoose));
             }
         }
 
@@ -120,6 +282,18 @@ namespace GUI.ViewModels
             Model.Race.SelectedTraits = new List<IRacialTrait>(_selectedTraits.Select(t => t.Trait));
             Model.Race.AvailableTraits = new List<IRacialTrait>(_availableTraits.Select(t => t.Trait));
             OnPropertyChanged(nameof(TotalRP));
+            OnPropertyChanged(nameof(NumOptionalAbilityModifiers));
+            OnPropertyChanged(nameof(NumOptionalAbilityModifiersLeftToChoose));
+
+            if (NumOptionalAbilityModifiersLeftToChoose < 0)
+            {
+                OptionalStrengthChecked = false;
+                OptionalDexterityChecked = false;
+                OptionalConstitutionChecked = false;
+                OptionalIntelligenceChecked = false;
+                OptionalWisdomChecked = false;
+                OptionalCharismaChecked = false;
+            }
         }
 
         public ObservableCollection<Race> RacesList { get; } = new ObservableCollection<Race>
@@ -206,6 +380,7 @@ namespace GUI.ViewModels
 
         public override void ReloadModelValues()
         {
+            OnPropertyChanged(nameof(NumOptionalAbilityModifiers));
         }
     }
 

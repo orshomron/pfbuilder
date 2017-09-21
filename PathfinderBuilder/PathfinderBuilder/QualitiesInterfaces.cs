@@ -2,6 +2,11 @@
 
 namespace PathfinderBuilder
 {
+    public interface IAddOptionalAbilityModifier
+    {
+        int Number { get; }
+    }
+
     public interface IAddToSkills
     {
         IDictionary<Skills, int> SkillAndModifier { get; }

@@ -52,6 +52,8 @@ namespace PathfinderBuilder
 
     public interface IRaceWithOptionalAbilityModifier
     {
-        Attributes SelectedAttribute { get; set; }
+        HashSet<Attributes> AttributesWithModifier { get; }
+
+        int NumberOfAttributes { get; }
     }
 }

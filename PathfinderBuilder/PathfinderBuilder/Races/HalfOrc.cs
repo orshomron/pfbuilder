@@ -33,76 +33,35 @@ namespace PathfinderBuilder.Races
             SelectedTraits.Add(new SimpleRacialTrait("Orc Blood", "Half-orcs count as both humans and orcs for any effect related to race", type, orcBlood));
         }
 
-        public override string Type
-        {
-            get { return "Humanoid"; }
-        }
+        public override string Type => "Humanoid";
 
-        public override List<string> Subtypes
-        {
-            get { return new List<string> { "Human", "Orc" }; }
-        }
+        public override List<string> Subtypes => new List<string> { "Human", "Orc" };
 
-        public override bool RaceHasOptionalAbilityModifier
-        {
-            get { return true; }
-        }
+        public override bool RaceHasOptionalAbilityModifier => true;
 
-        public override int StrengthModifier
-        {
-            get { return SelectedAttribute == Attributes.Strength ? 2 : 0; }
-        }
+        public override int StrengthModifier => AttributesWithModifier.Contains(Attributes.Strength) ? 2 : 0;
 
-        public override int DexterityModifier
-        {
-            get { return SelectedAttribute == Attributes.Dexterity ? 2 : 0; }
-        }
+        public override int DexterityModifier => AttributesWithModifier.Contains(Attributes.Dexterity) ? 2 : 0;
 
-        public override int ConstitutionModifier
-        {
-            get { return SelectedAttribute == Attributes.Constitution ? 2 : 0; }
-        }
+        public override int ConstitutionModifier => AttributesWithModifier.Contains(Attributes.Constitution) ? 2 : 0;
 
-        public override int IntelligenceModifier
-        {
-            get { return SelectedAttribute == Attributes.Intelligence ? 2 : 0; }
-        }
+        public override int IntelligenceModifier => AttributesWithModifier.Contains(Attributes.Intelligence) ? 2 : 0;
 
-        public override int WisdomModifier
-        {
-            get { return SelectedAttribute == Attributes.Wisdom ? 2 : 0; }
-        }
+        public override int WisdomModifier => AttributesWithModifier.Contains(Attributes.Wisdom) ? 2 : 0;
 
-        public override int CharismaModifier
-        {
-            get { return SelectedAttribute == Attributes.Charisma ? 2 : 0; }
-        }
+        public override int CharismaModifier => AttributesWithModifier.Contains(Attributes.Charisma) ? 2 : 0;
 
-        public Attributes SelectedAttribute { get; set; }
+        public override string RaceName => "Half-Orc";
 
-        public override string RaceName
-        {
-            get { return "Half-Orc"; }
-        }
+        public override Size Size => Size.Medium;
 
-        public override Size Size
-        {
-            get { return Size.Medium; }
-        }
+        public override int Speed => 30;
 
-        public override int Speed
-        {
-            get { return 30; }
-        }
+        public override List<Language> StartingLanguages => StaticStartingLanguages;
 
-        public override List<Language> StartingLanguages
-        {
-            get { return StaticStartingLanguages; }
-        }
+        public override List<Language> AvailableLanguages => StaticAvailableLanguages;
 
-        public override List<Language> AvailableLanguages
-        {
-            get { return StaticAvailableLanguages; }
-        }
+        public HashSet<Attributes> AttributesWithModifier { get; set; } = new HashSet<Attributes>();
+        public int NumberOfAttributes { get; set; } = 1;
     }
 }
