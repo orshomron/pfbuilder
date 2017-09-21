@@ -50,6 +50,10 @@ namespace GUI.ViewModels
         {
             OnPropertyChanged("Feats");
         }
+
+        public override void ReloadModelValues()
+        {
+        }
     }
 
     public class FeatViewModel : BaseViewModel
@@ -83,6 +87,10 @@ namespace GUI.ViewModels
         public override string ToString()
         {
             return $"VM: {Feat.Name}";
+        }
+
+        public override void ReloadModelValues()
+        {
         }
     }
 

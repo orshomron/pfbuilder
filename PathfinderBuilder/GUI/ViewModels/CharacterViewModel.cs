@@ -4,6 +4,8 @@ namespace GUI.ViewModels
 {
     public class CharacterViewModel : BaseViewModel
     {
+        private int _selectedTabIndex;
+
         public RaceViewModel RaceVM { get; }
 
         public ClassesViewModel ClassesVM { get; }
@@ -18,12 +20,27 @@ namespace GUI.ViewModels
 
         public Character Character { get; }
 
+        public int SelectedTabIndex
+        {
+            get { return _selectedTabIndex; }
+            set
+            {
+                _selectedTabIndex = value;
+                AbilitiesVM.ReloadModelValues();
+                SkillsVM.ReloadModelValues();
+                RaceVM.ReloadModelValues();
+                LanguagesVM.ReloadModelValues();
+                FeatsVM.ReloadModelValues();
+                ClassesVM.ReloadModelValues();
+            }
+        }
+
         public CharacterViewModel()
         {
             Character = new Character();
 
             RaceVM = new RaceViewModel(this);
-            AbilitiesVM = new AbilitiesViewModel(this);
+            AbilitiesVM = new AbilitiesViewModel(Character);
             ClassesVM = new ClassesViewModel(this);
             SkillsVM = new SkillsViewModel(this);
             FeatsVM = new FeatsViewModel(this);
@@ -31,5 +48,9 @@ namespace GUI.ViewModels
 
         }
 
+        public override void ReloadModelValues()
+        {
+            
+        }
     }
 }

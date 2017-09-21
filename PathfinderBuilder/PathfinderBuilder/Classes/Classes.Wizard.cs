@@ -66,8 +66,6 @@ namespace PathfinderBuilder.Classes
             new ScribeScrollFeat()
         };
 
-        private readonly List<object> _myArchtypes = Enum.GetValues(typeof(WizardArchtypes)).Cast<WizardArchtypes>().Where(a => a != WizardArchtypes.Vanilla).Cast<object>().ToList();
-
         public override string ClassName
         {
             get { return "Wizard"; }
@@ -116,10 +114,7 @@ namespace PathfinderBuilder.Classes
             return true;
         }
 
-        public override List<object> MyArchtypes
-        {
-            get { return _myArchtypes; }
-        }
+        public override IReadOnlyList<object> MyArchtypes => Enum.GetValues(typeof(WizardArchtypes)).Cast<WizardArchtypes>().Where(a => a != WizardArchtypes.Vanilla).Cast<object>().ToList();
 
         public override Type ArchtypeEnumType
         {

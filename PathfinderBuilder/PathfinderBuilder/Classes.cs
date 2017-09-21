@@ -33,7 +33,7 @@ namespace PathfinderBuilder
 
         public abstract bool CanAddArchtype(object archtypeEnum, Character character);
 
-        public abstract List<object> MyArchtypes { get; }
+        public abstract IReadOnlyList<object> MyArchtypes { get; }
 
         public abstract Type ArchtypeEnumType { get; }
     }
@@ -41,7 +41,6 @@ namespace PathfinderBuilder
     public abstract class PrestigeClass : ClassBase
     {
         public abstract List<IPrerequisite> Prerequisites { get; }
-        private readonly List<object> _myArchtypesEmpty = new List<object>();
 
         public sealed override bool IsArchtype
         {
@@ -68,9 +67,6 @@ namespace PathfinderBuilder
             return Prerequisites.All(c => c.CanUse(@char));
         }
 
-        public override List<object> MyArchtypes
-        {
-            get { return _myArchtypesEmpty; }
-        }
+        public override IReadOnlyList<object> MyArchtypes { get; } = new List<object>();
     }
 }

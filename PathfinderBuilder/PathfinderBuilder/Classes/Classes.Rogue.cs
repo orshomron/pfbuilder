@@ -75,7 +75,6 @@ namespace PathfinderBuilder.Classes
         }
         #endregion
 
-        private readonly List<object> _myArchtypes = Enum.GetValues(typeof(RogueArchtypes)).Cast<RogueArchtypes>().Where(a => a != RogueArchtypes.Vanilla).Cast<object>().ToList();
         private readonly List<Saves> _myGoodSaves = new List<Saves> { Saves.Reflex };
         private readonly List<Skills> _myClassSkills = new List<Skills>
         {
@@ -222,10 +221,7 @@ namespace PathfinderBuilder.Classes
             return true;
         }
 
-        public override List<object> MyArchtypes
-        {
-            get { return _myArchtypes; }
-        }
+        public override IReadOnlyList<object> MyArchtypes => Enum.GetValues(typeof(RogueArchtypes)).Cast<RogueArchtypes>().Where(a => a != RogueArchtypes.Vanilla).Cast<object>().ToList();
 
         public override Type ArchtypeEnumType
         {

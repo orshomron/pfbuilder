@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace PathfinderBuilder
 {
@@ -25,6 +26,27 @@ namespace PathfinderBuilder
         {
             SelectedTraits = new List<IRacialTrait>();
             AvailableTraits = new List<IRacialTrait>();
+        }
+
+        public int GetModifier(Attributes attribute)
+        {
+            switch (attribute)
+            {
+                case Attributes.Charisma:
+                    return CharismaModifier;
+                case Attributes.Constitution:
+                    return ConstitutionModifier;
+                case Attributes.Dexterity:
+                    return DexterityModifier;
+                case Attributes.Strength:
+                    return StrengthModifier;
+                case Attributes.Wisdom:
+                    return WisdomModifier;
+                case Attributes.Intelligence:
+                    return IntelligenceModifier;
+                default:
+                    throw new InvalidOperationException("Unknown attribute recieved");
+            }
         }
     }
 

@@ -1,76 +1,41 @@
 ﻿using System;
-using System.ComponentModel;
 using PathfinderBuilder;
 
 namespace GUI.ViewModels
 {
-    
 
-    public class AbilitiesViewModel : BaseViewModel
+
+    public class AbilitiesViewModel : BaseViewModel<Character>
     {
-        private byte _str = 10, _dex = 10, _con = 10, _int = 10, _wis = 10, _cha = 10;
         private bool _allowMoreThan18;
         private PointBuyOptions _pointBuyOption = PointBuyOptions.O20;
-        private readonly CharacterViewModel _owner;
 
-        public AbilitiesViewModel(CharacterViewModel character)
+        public AbilitiesViewModel(Character character) : base(character)
         {
-            _owner = character;
-            _owner.RaceVM.PropertyChanged += RaceOnPropertyChanged;
         }
 
-        protected override void OnPropertyChanged(string propertyName = null)
-        {
-            base.OnPropertyChanged(propertyName);
-            _owner.Character.AbilityScores[Attributes.Strength] = FinalStrength;
-            _owner.Character.AbilityScores[Attributes.Dexterity] = FinalDexterity;
-            _owner.Character.AbilityScores[Attributes.Constitution] = FinalConstitution;
-            _owner.Character.AbilityScores[Attributes.Intelligence] = FinalIntelligence;
-            _owner.Character.AbilityScores[Attributes.Wisdom] = FinalWisdom;
-            _owner.Character.AbilityScores[Attributes.Charisma] = FinalCharisma;
+        public int RaceStrengthModifier { get { return Model.Race.StrengthModifier; } }
+        public int RaceDexterityModifier { get { return Model.Race.DexterityModifier; } }
+        public int RaceConstitutionModifier { get { return Model.Race.ConstitutionModifier; } }
+        public int RaceIntelligenceModifier { get { return Model.Race.IntelligenceModifier; } }
+        public int RaceWisdomModifier { get { return Model.Race.WisdomModifier; } }
+        public int RaceCharismaModifier { get { return Model.Race.CharismaModifier; } }
 
-            _owner.Character.AbilityScoresRaw[Attributes.Strength] = Strength;
-            _owner.Character.AbilityScoresRaw[Attributes.Dexterity] = Dexterity;
-            _owner.Character.AbilityScoresRaw[Attributes.Constitution] = Constitution;
-            _owner.Character.AbilityScoresRaw[Attributes.Intelligence] = Intelligence;
-            _owner.Character.AbilityScoresRaw[Attributes.Wisdom] = Wisdom;
-            _owner.Character.AbilityScoresRaw[Attributes.Charisma] = Charisma;
-        }
-
-        private void RaceOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
-        {
-            OnPropertyChanged("RaceStrengthModifier");
-            OnPropertyChanged("RaceDexterityModifier");
-            OnPropertyChanged("RaceConstitutionModifier");
-            OnPropertyChanged("RaceIntelligenceModifier");
-            OnPropertyChanged("RaceWisdomModifier");
-            OnPropertyChanged("RaceCharismaModifier");
-        }
-
-        public int RaceStrengthModifier { get { return _owner.RaceVM.StrengthModifier; } }
-        public int RaceDexterityModifier { get { return _owner.RaceVM.DexterityModifier; } }
-        public int RaceConstitutionModifier { get { return _owner.RaceVM.ConstitutionModifier; } }
-        public int RaceIntelligenceModifier { get { return _owner.RaceVM.IntelligenceModifier; } }
-        public int RaceWisdomModifier { get { return _owner.RaceVM.WisdomModifier; } }
-        public int RaceCharismaModifier { get { return _owner.RaceVM.CharismaModifier; } }
-
-        public int FinalStrength { get { return _str + _owner.RaceVM.StrengthModifier; } }
-        public int FinalDexterity { get { return _dex + _owner.RaceVM.DexterityModifier; } }
-        public int FinalConstitution { get { return _con + _owner.RaceVM.ConstitutionModifier; } }
-        public int FinalIntelligence { get { return _int + _owner.RaceVM.IntelligenceModifier; } }
-        public int FinalWisdom { get { return _wis + _owner.RaceVM.WisdomModifier; } }
-        public int FinalCharisma { get { return _cha + _owner.RaceVM.CharismaModifier; } }
+        public int FinalStrength { get { return Model.GetCalculatedAttribute(Attributes.Strength); } }
+        public int FinalDexterity { get { return Model.GetCalculatedAttribute(Attributes.Dexterity); } }
+        public int FinalConstitution { get { return Model.GetCalculatedAttribute(Attributes.Constitution); } }
+        public int FinalIntelligence { get { return Model.GetCalculatedAttribute(Attributes.Intelligence); } }
+        public int FinalWisdom { get { return Model.GetCalculatedAttribute(Attributes.Wisdom); } }
+        public int FinalCharisma { get { return Model.GetCalculatedAttribute(Attributes.Charisma); } }
 
         public byte Intelligence
         {
-            get
-            {
-                return _int;
-            }
+            get { return Model.AbilityScoresRaw[Attributes.Intelligence]; }
             set
             {
-                _int = value;
+                Model.AbilityScoresRaw[Attributes.Intelligence] = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(FinalIntelligence));
             }
         }
 
@@ -78,27 +43,24 @@ namespace GUI.ViewModels
         {
             get
             {
-                return _wis;
+                return Model.AbilityScoresRaw[Attributes.Wisdom];
             }
             set
             {
-                _wis = value;
+                Model.AbilityScoresRaw[Attributes.Wisdom] = value;
                 OnPropertyChanged();
-                OnPropertyChanged("WisdomCost");
-                OnPropertyChanged("CurrentTotalPointCost");
+                OnPropertyChanged(nameof(FinalWisdom));
             }
         }
 
         public byte Charisma
         {
-            get
-            {
-                return _cha;
-            }
+            get { return Model.AbilityScoresRaw[Attributes.Charisma]; }
             set
             {
-                _cha = value;
+                Model.AbilityScoresRaw[Attributes.Charisma] = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(FinalCharisma));
             }
         }
 
@@ -106,14 +68,13 @@ namespace GUI.ViewModels
         {
             get
             {
-                return _con;
+                return Model.AbilityScoresRaw[Attributes.Constitution];
             }
             set
             {
-                _con = value;
+                Model.AbilityScoresRaw[Attributes.Constitution] = value;
                 OnPropertyChanged();
-                OnPropertyChanged("ConstitutionCost");
-                OnPropertyChanged("CurrentTotalPointCost");
+                OnPropertyChanged(nameof(FinalConstitution));
             }
         }
 
@@ -121,14 +82,13 @@ namespace GUI.ViewModels
         {
             get
             {
-                return _dex;
+                return Model.AbilityScoresRaw[Attributes.Dexterity];
             }
             set
             {
-                _dex = value;
+                Model.AbilityScoresRaw[Attributes.Dexterity] = value;
                 OnPropertyChanged();
-                OnPropertyChanged("DexterityCost");
-                OnPropertyChanged("CurrentTotalPointCost");
+                OnPropertyChanged(nameof(FinalDexterity));
             }
         }
 
@@ -136,12 +96,13 @@ namespace GUI.ViewModels
         {
             get
             {
-                return _str;
+                return Model.AbilityScoresRaw[Attributes.Strength];
             }
             set
             {
-                _str = value;
+                Model.AbilityScoresRaw[Attributes.Strength] = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(FinalStrength));
             }
         }
 
@@ -185,7 +146,17 @@ namespace GUI.ViewModels
                 case Attributes.Charisma:
                     return FinalCharisma;
             }
-            throw new ArgumentException("Unknown attribute recieved", "attribute");
+            throw new ArgumentException("Unknown attribute recieved", nameof(attribute));
+        }
+
+        public override void ReloadModelValues()
+        {
+            OnPropertyChanged(nameof(RaceStrengthModifier));
+            OnPropertyChanged(nameof(RaceDexterityModifier));
+            OnPropertyChanged(nameof(RaceConstitutionModifier));
+            OnPropertyChanged(nameof(RaceIntelligenceModifier));
+            OnPropertyChanged(nameof(RaceWisdomModifier));
+            OnPropertyChanged(nameof(RaceCharismaModifier));
         }
     }
 }

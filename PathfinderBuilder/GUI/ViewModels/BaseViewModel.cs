@@ -4,9 +4,21 @@ using JetBrains.Annotations;
 
 namespace GUI.ViewModels
 {
-    public class BaseViewModel : INotifyPropertyChanged
+    public abstract class BaseViewModel<T> : BaseViewModel
+    {
+        protected T Model { get; }
+
+        public BaseViewModel(T model)
+        {
+            Model = model;
+        }
+    }
+
+    public abstract class BaseViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public abstract void ReloadModelValues();
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

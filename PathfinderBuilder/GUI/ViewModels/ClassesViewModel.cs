@@ -157,6 +157,10 @@ namespace GUI.ViewModels
         {
             OnPropertyChanged("ShowPrestigeUnavailable");
         }
+
+        public override void ReloadModelValues()
+        {
+        }
     }
 
     public class ClassWithLevelViewModel : ClassViewModel
@@ -248,6 +252,10 @@ namespace GUI.ViewModels
         {
             OnPropertyChanged("CanBeAdded");
         }
+
+        public override void ReloadModelValues()
+        {
+        }
     }
 
     public class ClassViewModel : BaseViewModel
@@ -264,6 +272,9 @@ namespace GUI.ViewModels
         public string Name { get { return ClassInstance.ClassName; } }
 
         public ClassBase Instance { get { return ClassInstance; } }
+        public override void ReloadModelValues()
+        {
+        }
     }
 
     public class PrestigeClassViewModel : ClassViewModel

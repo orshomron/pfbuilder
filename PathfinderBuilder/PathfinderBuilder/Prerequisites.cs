@@ -151,7 +151,7 @@ namespace PathfinderBuilder
 
         public bool CanUse(Character character)
         {
-            return _minimums.All(kvp => character.AbilityScores[kvp.Key] >= kvp.Value);
+            return _minimums.All(kvp => character.GetCalculatedAttribute(kvp.Key) >= kvp.Value);
         }
 
         public string NotMetText

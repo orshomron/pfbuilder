@@ -11,7 +11,7 @@
         MinHeight="600"
         Title="MainWindow" Height="600" Width="800">
     <Grid>
-        <TabControl>
+        <TabControl SelectedIndex="{Binding SelectedTabIndex}">
             <TabItem Header="Race">
                 <views:RaceUserControl DataContext="{Binding RaceVM, Mode=OneTime}" />
             </TabItem>

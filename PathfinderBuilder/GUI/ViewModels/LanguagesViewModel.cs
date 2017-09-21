@@ -42,6 +42,11 @@ namespace GUI.ViewModels
                 return _language;
             }
         }
+
+        public override void ReloadModelValues()
+        {
+            
+        }
     }
 
     public class LanguagesViewModel : BaseViewModel
@@ -211,6 +216,10 @@ namespace GUI.ViewModels
         public ICommand MoveFromAvailableToKnownCommand
         {
             get { return _availableToKnownCommand; }
+        }
+
+        public override void ReloadModelValues()
+        {
         }
     }
 }

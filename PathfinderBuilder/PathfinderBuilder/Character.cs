@@ -1,59 +1,62 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using PathfinderBuilder.Races;
 
 namespace PathfinderBuilder
 {
     public sealed class Character
     {
-        private readonly Dictionary<Attributes, int> _abilityScores = new Dictionary<Attributes, int>();
-        private readonly Dictionary<Attributes, int> _abilityScoresRaw = new Dictionary<Attributes, int>();
-        private readonly Dictionary<Skills, int> _skillRanks = new Dictionary<Skills, int>();
-        private readonly Dictionary<Skills, int> _skillFinalModifiers = new Dictionary<Skills, int>();
-        private readonly List<Language> _knownLanguages = new List<Language>();
-
         /// <summary>
         /// Before modifications
         /// </summary>
-        public Dictionary<Attributes, int> AbilityScoresRaw { get { return _abilityScoresRaw; } }
+        public Dictionary<Attributes, byte> AbilityScoresRaw { get; } = new Dictionary<Attributes, byte>
+        {
+            {Attributes.Strength,     10},
+            {Attributes.Dexterity,    10 },
+            {Attributes.Constitution, 10 },
+            {Attributes.Intelligence, 10 },
+            {Attributes.Wisdom,       10 },
+            {Attributes.Charisma,     10 },
+        };
 
         /// <summary>
-        /// this is final values after all modifications
+        /// Level bonuses to attributes
         /// </summary>
-        public Dictionary<Attributes, int> AbilityScores
+        public Dictionary<Attributes, byte> AbilityScoresLevelBonuses { get; } = new Dictionary<Attributes, byte>
         {
-            get
-            {
-                return _abilityScores;
-            }
-        }
+            {Attributes.Strength,     0},
+            {Attributes.Dexterity,    0 },
+            {Attributes.Constitution, 0 },
+            {Attributes.Intelligence, 0 },
+            {Attributes.Wisdom,       0 },
+            {Attributes.Charisma,     0 },
+        };
 
         /// <summary>
         /// Skill ranks raw
         /// </summary>
-        public Dictionary<Skills, int> SkillRanks { get { return _skillRanks; } }
+        public Dictionary<Skills, int> SkillRanks { get; } = new Dictionary<Skills, int>();
 
         /// <summary>
         /// Skills after all modifications
         /// </summary>
-        public Dictionary<Skills, int> FinalSkillModifiers { get { return _skillFinalModifiers; } }
+        public Dictionary<Skills, int> FinalSkillModifiers { get; } = new Dictionary<Skills, int>();
 
-        public Race Race { get; set; }
+        public Race Race { get; set; } = new Human();
 
-        public List<Language> KnownLanguages { get { return _knownLanguages; } }
+        public List<Language> KnownLanguages { get; } = new List<Language>();
 
-        public Dictionary<ClassBase, int> Levels { get; set; }
+        public Dictionary<ClassBase, int> Levels { get; set; } = new Dictionary<ClassBase, int>();
 
-        public List<IFeat> FreeFeats { get; set; }
+        public List<IFeat> FreeFeats { get; set; } = new List<IFeat>();
 
-        public List<IFeat> SelectedFeats { get; set; }
+        public List<IFeat> SelectedFeats { get; set; } = new List<IFeat>();
 
-        public IEnumerable<IFeat> AllFeats { get { return FreeFeats.Union(SelectedFeats); } }
+        public IEnumerable<IFeat> AllFeats => FreeFeats.Union(SelectedFeats);
 
-        public Character()
+        public int GetCalculatedAttribute(Attributes attribute)
         {
-            Levels = new Dictionary<ClassBase, int>();
-            FreeFeats = new List<IFeat>();
-            SelectedFeats = new List<IFeat>();
+            return AbilityScoresRaw[attribute] + AbilityScoresLevelBonuses[attribute] + Race.GetModifier(attribute);
         }
     }
 }

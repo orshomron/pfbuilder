@@ -259,6 +259,10 @@ namespace GUI.ViewModels
         {
             get { return _removeSelectedTraitCommand; }
         }
+
+        public override void ReloadModelValues()
+        {
+        }
     }
 
     public class GenericRacialTraitViewModel : BaseViewModel
@@ -299,6 +303,10 @@ namespace GUI.ViewModels
         public void ChangedSelectedTraits()
         {
             OnPropertyChanged("ReplacedTraits");
+        }
+
+        public override void ReloadModelValues()
+        {
         }
     }
 }

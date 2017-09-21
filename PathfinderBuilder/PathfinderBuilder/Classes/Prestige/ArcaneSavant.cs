@@ -8,15 +8,6 @@ namespace PathfinderBuilder.Classes.Prestige
 {
     public class ArcaneSavant : PrestigeClass, ICaster
     {
-        private readonly List<IPrerequisite> _prerequisites = new List<IPrerequisite>
-        {
-            new SkillRankPrerequisite(Skills.KnowledgeArcane, 5),
-            new SkillRankPrerequisite(Skills.Spellcraft, 5),
-            new SkillRankPrerequisite(Skills.UseMagicDevice, 5),
-            new FeatPrerequisite("Magical Aptitude"),
-            new FeatTypePrerequisite(typeof(IItemCreationFeat), "Item Creation Feats")
-            // TODO: add caster can cast 2nd level spells
-        };
         private readonly List<Saves> _myGoodSaves = new List<Saves> { Saves.Will };
         private readonly List<Skills> _myClassSkills = new List<Skills>
         {
@@ -42,7 +33,6 @@ namespace PathfinderBuilder.Classes.Prestige
             Skills.Survival,
             Skills.UseMagicDevice
         };
-        private readonly List<IFeat> _myStartingFeats = new List<IFeat>();
 
         public override string ClassName
         {
@@ -65,20 +55,22 @@ namespace PathfinderBuilder.Classes.Prestige
 
         public override List<Saves> GoodSaves { get { return _myGoodSaves; } }
 
-        public override List<IFeat> StartingFeats
-        {
-            get { return _myStartingFeats; }
-        }
+        public override List<IFeat> StartingFeats { get; } = new List<IFeat>();
 
         public override Type ArchtypeEnumType
         {
             get { return typeof(RacialArchtype); }
         }
 
-        public override List<IPrerequisite> Prerequisites
+        public override List<IPrerequisite> Prerequisites { get; } = new List<IPrerequisite>
         {
-            get { return _prerequisites; }
-        }
+            new SkillRankPrerequisite(Skills.KnowledgeArcane, 5),
+            new SkillRankPrerequisite(Skills.Spellcraft, 5),
+            new SkillRankPrerequisite(Skills.UseMagicDevice, 5),
+            new FeatPrerequisite("Magical Aptitude"),
+            new FeatTypePrerequisite(typeof(IItemCreationFeat), "Item Creation Feats")
+            // TODO: add caster can cast 2nd level spells
+        };
 
         public MagicType CasterType
         {

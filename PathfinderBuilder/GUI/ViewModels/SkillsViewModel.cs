@@ -86,6 +86,10 @@ namespace GUI.ViewModels
         {
             OnPropertyChanged("FinalScore");
         }
+
+        public override void ReloadModelValues()
+        {
+        }
     }
 
     public class SkillWithSubcategoryViewModel : SkillViewModel
@@ -191,6 +195,11 @@ namespace GUI.ViewModels
         {
             OnPropertyChanged("CurrentAvailableRanks");
             _owner.ClassesVM.PrerequestiesMayChanged();
+        }
+
+        public override void ReloadModelValues()
+        {
+            
         }
     }
 }
