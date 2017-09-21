@@ -44,7 +44,19 @@ namespace GUI.ViewModels
                         .Where(t => t.SkillAndModifier.ContainsKey(Skill))
                         .Sum(t => t.SkillAndModifier[Skill]);
 
-                return Ranks + (Proficient && Ranks > 0 ? 3 : 0) + (int)ModifierConverter.Convert(_owner.Model.GetCalculatedAttribute(Attribute), typeof(int), null, null) + raceModifier;
+                var flatFeatModifiers = _owner.Model.AllFeats.OfType<IAddToSkills>()
+                    .Where(t => t.SkillAndModifier.ContainsKey(Skill))
+                    .Sum(t => t.SkillAndModifier[Skill]);
+
+                var variableFeatModifiers = _owner.Model.AllFeats.OfType<IAddToSkillsDependOnRank>()
+                    .Where(t => t.LevelCommulativeBonusBySkill.ContainsKey(Skill))
+                    .Sum(t => t.LevelCommulativeBonusBySkill[Skill].Where(kvp => kvp.Key <= Ranks).Max(kvp => kvp.Value));
+
+                var classSkillBonus = Proficient && Ranks > 0 ? 3 : 0;
+
+                var attributeBonus = ModifierConverter.Convert(_owner.Model.GetCalculatedAttribute(Attribute));
+
+                return Ranks + attributeBonus + classSkillBonus + raceModifier + flatFeatModifiers + variableFeatModifiers;
             }
         }
 
@@ -63,18 +75,12 @@ namespace GUI.ViewModels
         {
             if (args.PropertyName == "TotalLevel" || args.PropertyName == "CurrentAvailableRanks")
             {
-                OnPropertyChanged("MaximumLevel");
+                OnPropertyChanged(nameof(MaximumLevel));
             }
         }
 
-        public int MaximumLevel
-        {
-            get
-            {
-                return Math.Min(Ranks + _owner.CurrentAvailableRanks, _owner.TotalLevel);
-            }
-        }
-        
+        public int MaximumLevel => Math.Min(Ranks + _owner.CurrentAvailableRanks, _owner.TotalLevel);
+
         public override void ReloadModelValues()
         {
             OnPropertyChanged(nameof(FinalScore));
@@ -98,7 +104,15 @@ namespace GUI.ViewModels
         private readonly ObservableCollection<SkillViewModel> _skills = new ObservableCollection<SkillViewModel>();
 
 
-        public int TotalAvailableRanks { get { return Model.Levels.Sum(vm => vm.Value * Math.Max(1, vm.Key.SkillPointsPerLevel + (int)ModifierConverter.Convert(Model.GetCalculatedAttribute(Attributes.Intelligence), typeof(int), null, null))); } }
+        public int TotalAvailableRanks
+        {
+            get
+            {
+                var intMod = (int)ModifierConverter.Convert(Model.GetCalculatedAttribute(Attributes.Intelligence), typeof(int), null, null);
+                var raceFlatBonus = Model.Race.SelectedTraits.OfType<IAddsSkillPointPerLevel>().Sum(t => t.SkillPointsPerLevel);
+                return Model.Levels.Sum(vm => vm.Value * Math.Max(1, vm.Key.SkillPointsPerLevel + intMod + raceFlatBonus));
+            }
+        }
 
         public int CurrentAvailableRanks
         {

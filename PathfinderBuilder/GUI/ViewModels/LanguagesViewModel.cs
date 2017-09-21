@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
 using GUI.Commands;
@@ -14,12 +13,11 @@ namespace GUI.ViewModels
     public class LanguageViewModel : BaseViewModel
     {
         private bool _isRacial;
-        private readonly Language _language;
 
         public LanguageViewModel(bool isRacial, Language language)
         {
             _isRacial = isRacial;
-            _language = language;
+            Language = language;
         }
 
         public bool IsRacial
@@ -35,13 +33,7 @@ namespace GUI.ViewModels
             }
         }
 
-        public Language Language
-        {
-            get
-            {
-                return _language;
-            }
-        }
+        public Language Language { get; }
 
         public override void ReloadModelValues()
         {
@@ -54,7 +46,7 @@ namespace GUI.ViewModels
         private static readonly AbilityModifierConverterToInt AbilityToModifierConverter = new AbilityModifierConverterToInt();
 
         private readonly ObservableCollection<LanguageViewModel> _knownLanguages;
-        private readonly ObservableCollection<LanguageViewModel> _availableLanguages = new ObservableCollection<LanguageViewModel>();
+        private readonly ObservableCollection<LanguageViewModel> _availableLanguages;
         private bool _hasLinguistics;
         private LanguageViewModel _selectedAvailable, _selectedKnown;
         private readonly MoveLanguagesKnownToAvailableCommand _knownToAvailableCommand;
@@ -72,14 +64,9 @@ namespace GUI.ViewModels
             _availableToKnownCommand = new MoveLanguagesAvailableToKnownCommand(this);
         }
 
-        private void RaceVMOnPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            ResetLanguageLists();
-        }
-
         private void LangaugeCollectionsChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            OnPropertyChanged("LeftToSelect");
+            OnPropertyChanged(nameof(LeftToSelect));
         }
 
         private void ResetLanguageLists()
@@ -98,11 +85,63 @@ namespace GUI.ViewModels
             }
         }
 
-        private void CharacterVMOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        public ObservableCollection<LanguageViewModel> AvailableLanguages => _availableLanguages;
+
+        public ObservableCollection<LanguageViewModel> KnownLanguages => _knownLanguages;
+
+        public int TotalToSelect
         {
+            get
+            {
+                var fromInt = Math.Max(0, (int)AbilityToModifierConverter.Convert(Model.GetCalculatedAttribute(Attributes.Intelligence), typeof(int), null, null));
+
+                int fromLinguistics;
+                Model.SkillRanks.TryGetValue(Skills.Linguistics, out fromLinguistics);
+                
+                var isDoubleLinguistics = Model.Race.SelectedTraits.Any(t => t is IDoubleLinguistics);
+
+                if (isDoubleLinguistics)
+                {
+                    fromLinguistics *= 2;
+                }
+
+                return fromInt + fromLinguistics;
+            }
+        }
+
+        public int LeftToSelect => TotalToSelect - _knownLanguages.Count + Model.Race.StartingLanguages.Count;
+
+        public LanguageViewModel SelectedAvailable
+        {
+            get { return _selectedAvailable; }
+            set
+            {
+                _selectedAvailable = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public LanguageViewModel SelectedKnown
+        {
+            get { return _selectedKnown; }
+            set
+            {
+                _selectedKnown = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ICommand MoveFromKnownToAvailableCommand => _knownToAvailableCommand;
+
+        public ICommand MoveFromAvailableToKnownCommand => _availableToKnownCommand;
+
+        public override void ReloadModelValues()
+        {
+            ResetLanguageLists();
+
             if (Model.SkillRanks.ContainsKey(Skills.Linguistics) &&
-                Model.SkillRanks[Skills.Linguistics] > 0 &&
-                !_hasLinguistics)
+               Model.SkillRanks[Skills.Linguistics] > 0 &&
+               !_hasLinguistics)
             {
                 _hasLinguistics = true;
 
@@ -146,73 +185,10 @@ namespace GUI.ViewModels
 
             }
 
-            OnPropertyChanged("AvailableLanguages");
-            OnPropertyChanged("KnownLanguages");
-            OnPropertyChanged("TotalToSelect");
-            OnPropertyChanged("LeftToSelect");
-        }
-
-        public ObservableCollection<LanguageViewModel> AvailableLanguages { get { return _availableLanguages; } }
-
-        public ObservableCollection<LanguageViewModel> KnownLanguages { get { return _knownLanguages; } }
-
-        public int TotalToSelect
-        {
-            get
-            {
-                var fromInt = Math.Max(0, (int)AbilityToModifierConverter.Convert(Model.GetCalculatedAttribute(Attributes.Intelligence), typeof(int), null, null));
-
-                int fromLinguistics;
-                Model.SkillRanks.TryGetValue(Skills.Linguistics, out fromLinguistics);
-                
-                var isDoubleLinguistics = Model.Race.SelectedTraits.Any(t => t is IDoubleLinguistics);
-
-                if (isDoubleLinguistics)
-                {
-                    fromLinguistics *= 2;
-                }
-
-                return fromInt + fromLinguistics;
-            }
-        }
-
-        public int LeftToSelect
-        {
-            get { return TotalToSelect - _knownLanguages.Count + Model.Race.StartingLanguages.Count; }
-        }
-
-        public LanguageViewModel SelectedAvailable
-        {
-            get { return _selectedAvailable; }
-            set
-            {
-                _selectedAvailable = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public LanguageViewModel SelectedKnown
-        {
-            get { return _selectedKnown; }
-            set
-            {
-                _selectedKnown = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public ICommand MoveFromKnownToAvailableCommand
-        {
-            get { return _knownToAvailableCommand; }
-        }
-
-        public ICommand MoveFromAvailableToKnownCommand
-        {
-            get { return _availableToKnownCommand; }
-        }
-
-        public override void ReloadModelValues()
-        {
+            OnPropertyChanged(nameof(AvailableLanguages));
+            OnPropertyChanged(nameof(KnownLanguages));
+            OnPropertyChanged(nameof(TotalToSelect));
+            OnPropertyChanged(nameof(LeftToSelect));
         }
     }
 }

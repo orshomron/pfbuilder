@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Data;
+using JetBrains.Annotations;
 
 namespace GUI.Converters
 {
     [ValueConversion(typeof(byte), typeof(string))]
     public class AbilityModifierConverterToInt : IValueConverter
     {
+        [NotNull]
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             int val;
@@ -25,11 +27,13 @@ namespace GUI.Converters
             }
             else
             {
-                throw new ArgumentException("Value provided must be a Byte, recieved: " + value.GetType(), "value");
+                throw new ArgumentException("Value provided must be a Byte, recieved: " + value?.GetType(), nameof(value));
             }
             var modifier = (int)Math.Floor((val - 10) / 2.0);
             return modifier;
         }
+
+        public int Convert(int value) => (int)Convert(value, typeof(int), null, null);
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
