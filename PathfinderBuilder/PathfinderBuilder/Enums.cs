@@ -202,7 +202,8 @@ namespace PathfinderBuilder
         Centaur,
         Aquan,
         Auran,
-        Catfolk
+        Catfolk,
+        Tribal
     }
 
     public enum Attributes
@@ -347,5 +348,38 @@ namespace PathfinderBuilder
         Divine,
         Arcane,
         Existing
+    }
+
+    public enum BookSource
+    {
+        Core,
+        AdvancedRaceGuide,
+        AdvancedPlayersGuide,
+        GamemasterGuide,
+        MythicAdventures,
+        UltimateCampaign,
+        UltimateEquipment,
+        UltimateCombat,
+        UltimateMagic,
+        HorrorAdventures,
+        Beastiary1,
+        Beastiary2,
+        Beastiary3,
+        Beastiary4,
+        Beastiary5,
+        Beastiary6,
+
+        InnerSeaRaces,
+        InnerSeaMagic,
+
+        BloodOfShadows,
+        LegacyOfDragons,
+        HeroesOfTheWild,
+        AlchemyManual,
+        CohortsAndCompanions,
+
+        Pathfinder5SinsOfTheSaviors,
+        Pathfinder16EndlessNight,
+        
     }
 }

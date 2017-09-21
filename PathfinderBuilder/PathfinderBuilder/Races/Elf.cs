@@ -27,8 +27,8 @@ namespace PathfinderBuilder.Races
 
         public Elf()
         {
-            SelectedTraits.Add(new SimpleSkillAdditionRacialTrait("Keen Senses", "+2 Perception", new[] { new KeyValuePair<Skills, int>(Skills.Perception, 2) }, typeof(RacialTraitsCategories), RacialTraitsCategories.KeenSenses));
-            SelectedTraits.Add(new LowLightVisionRacialTrait(typeof(RacialTraitsCategories), RacialTraitsCategories.LowLightVision));
+            SelectedTraits.Add(new SimpleSkillAdditionRacialTrait("Keen Senses", "+2 Perception", new[] { new KeyValuePair<Skills, int>(Skills.Perception, 2) }, typeof(RacialTraitsCategories), BookSource.Core, RacialTraitsCategories.KeenSenses));
+            SelectedTraits.Add(new LowLightVisionRacialTrait(typeof(RacialTraitsCategories), RacialTraitsCategories.LowLightVision, BookSource.Core));
         }
 
         public override bool RaceHasOptionalAbilityModifier

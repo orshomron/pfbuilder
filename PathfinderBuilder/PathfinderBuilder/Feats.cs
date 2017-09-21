@@ -9,6 +9,8 @@ namespace PathfinderBuilder
         IPrerequisite Prerequisite { get; }
         string Name { get; }
         string Description { get; }
+
+        BookSource Source { get; }
     }
 
     public interface IFeatWithSkillSelection : IFeat
@@ -43,6 +45,7 @@ namespace PathfinderBuilder
         public IPrerequisite Prerequisite { get; private set; }
         public string Name { get { return "Dodge"; } }
         public string Description { get { return "+1 Dodge AC bonus"; } }
+        public BookSource Source { get; } = BookSource.Core;
         public int DodgeBonus { get { return 1; } }
     }
 }

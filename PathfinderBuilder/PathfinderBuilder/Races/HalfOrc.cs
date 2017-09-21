@@ -29,8 +29,8 @@ namespace PathfinderBuilder.Races
             const RacialTraitsCategories orcBlood = RacialTraitsCategories.OrcBlood;
             const RacialTraitsCategories intimidating = RacialTraitsCategories.Intimidating;
 
-            SelectedTraits.Add(new SimpleSkillAdditionRacialTrait("Intimidating", "+2 Intimidate", new[] { new KeyValuePair<Skills, int>(Skills.Intimidate, 2) }, type, intimidating));
-            SelectedTraits.Add(new SimpleRacialTrait("Orc Blood", "Half-orcs count as both humans and orcs for any effect related to race", type, orcBlood));
+            SelectedTraits.Add(new SimpleSkillAdditionRacialTrait("Intimidating", "+2 Intimidate", new[] { new KeyValuePair<Skills, int>(Skills.Intimidate, 2) }, type, BookSource.Core, intimidating));
+            SelectedTraits.Add(new SimpleRacialTrait("Orc Blood", "Half-orcs count as both humans and orcs for any effect related to race", type, BookSource.Core, orcBlood));
         }
 
         public override string Type => "Humanoid";

@@ -29,9 +29,9 @@ namespace PathfinderBuilder.Races
             const RacialTraitsCategories naturalHunter = RacialTraitsCategories.NaturalHunter;
             const RacialTraitsCategories lowLightVision = RacialTraitsCategories.LowLightVision;
 
-            SelectedTraits.Add(new SimpleSkillAdditionRacialTrait("Natural Hunter", "+2 Perception, Stealth and Survival", new[] { new KeyValuePair<Skills, int>(Skills.Perception, 2), new KeyValuePair<Skills, int>(Skills.Survival, 2), new KeyValuePair<Skills, int>(Skills.Stealth, 2) }, type, naturalHunter));
-            SelectedTraits.Add(new LowLightVisionRacialTrait(type, lowLightVision));
-            SelectedTraits.Add(new SimpleRacialTrait("Sprinter", "gain a 10-foot racial bonus to their speed when using the charge, run, or withdraw actions", type, sprinter));
+            SelectedTraits.Add(new SimpleSkillAdditionRacialTrait("Natural Hunter", "+2 Perception, Stealth and Survival", new[] { new KeyValuePair<Skills, int>(Skills.Perception, 2), new KeyValuePair<Skills, int>(Skills.Survival, 2), new KeyValuePair<Skills, int>(Skills.Stealth, 2) }, type, BookSource.Core, naturalHunter));
+            SelectedTraits.Add(new LowLightVisionRacialTrait(type, lowLightVision, BookSource.Core));
+            SelectedTraits.Add(new SimpleRacialTrait("Sprinter", "gain a 10-foot racial bonus to their speed when using the charge, run, or withdraw actions", type, BookSource.Core, sprinter));
         }
 
         public override Size Size

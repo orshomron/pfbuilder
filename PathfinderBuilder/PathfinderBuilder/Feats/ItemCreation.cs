@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PathfinderBuilder.Feats
+﻿namespace PathfinderBuilder.Feats
 {
     public abstract class MagicItemCreationFeat : IItemCreationFeat
     {
@@ -18,6 +12,7 @@ namespace PathfinderBuilder.Feats
         public IPrerequisite Prerequisite { get; }
         public string Name { get; }
         public string Description { get; }
+        public BookSource Source { get; protected set; } = BookSource.Core;
     }
 
     public class ScribeScrollFeat : MagicItemCreationFeat
@@ -31,6 +26,7 @@ namespace PathfinderBuilder.Feats
     {
         public BrewFleshcraftingPoisonFeat() : base(new ComplexPrerequisite(new CasterLevelPrerequisite(10), new SkillRankPrerequisite(Skills.CraftAlcehmy, 5)), "Brew Fleshcrafting Poison", "Learn the ancient drow art of creating fleshcrafting poisons.")
         {
+            Source = BookSource.Pathfinder16EndlessNight;
         }
     }
 
@@ -89,6 +85,7 @@ namespace PathfinderBuilder.Feats
         public CraftOozeFeat() : base(new ComplexPrerequisite(new CasterLevelPrerequisite(5), new FeatPrerequisite("Craft Wondrous Item"), new FeatPrerequisite("Brew Potion"), new SkillRankPrerequisite(Skills.CraftAlcehmy, 3)),
             "Craft Ooze", "You can create any construct whose prerequisites you meet.")
         {
+            Source = BookSource.AlchemyManual;
         }
     }
 
@@ -97,6 +94,7 @@ namespace PathfinderBuilder.Feats
         public FleshwarperFeat() : base(new ComplexPrerequisite(new SkillRankPrerequisite(Skills.CraftAlcehmy, 5), new SkillRankPrerequisite(Skills.Heal, 5)), // TODO: add evil alignment pre
             "Fleshwarper", "You can create fleshwarped creatures and fleshcraft grafts. A newly created fleshwarped creature has average hit points for its Hit Dice.")
         {
+            Source = BookSource.HorrorAdventures;
         }
     }
 
@@ -112,6 +110,7 @@ namespace PathfinderBuilder.Feats
         public GrowPlantCreatureFeat() : base(new ComplexPrerequisite(new FeatPrerequisite("Train Plants"), new SkillRankPrerequisite(Skills.HandleAnimal, 5), new SkillRankPrerequisite(Skills.KnowledgeNature, 5)),
             "Grow Plant Creature", "You can grow plants and perform rituals to invest them with animating spirits, becoming assassin vines, treants, or viper vines. Each plant creature has a list of additional prerequisites, costs, and skill checks required to grow them (see Growing Plant Creatures below). At the GM's discretion, characters with this feat may grow other plant creatures as well.")
         {
+            Source = BookSource.CohortsAndCompanions;
         }
     }
 
@@ -119,6 +118,7 @@ namespace PathfinderBuilder.Feats
     {
         public InscribeRuneFeat() : base(new CasterLevelPrerequisite(3), "Inscribe Rune", "Create magic runes.")
         {
+            Source = BookSource.Pathfinder5SinsOfTheSaviors;
         }
     }
 
@@ -127,6 +127,7 @@ namespace PathfinderBuilder.Feats
         public InscribeMagicalTattooFeat() : base(new ComplexPrerequisite(new CasterLevelPrerequisite(5), new SkillRankPrerequisite(Skills.CraftMisc, 5), new SpecialPrerequisite()), // TODO: change to correct craft handling
             "Inscribe Magical Tattoo", "Create magic tattoos")
         {
+            Source = BookSource.InnerSeaMagic;
         }
     }
 }

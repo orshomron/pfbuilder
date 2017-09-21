@@ -30,7 +30,7 @@ namespace PathfinderBuilder.Races
 
         public Gnome()
         {
-            SelectedTraits.Add(new SimpleSkillAdditionRacialTrait("Keen Senses", "+2 Perception", new[] { new KeyValuePair<Skills, int>(Skills.Perception, 2) }, typeof(RacialTraitsCategories), RacialTraitsCategories.KeenSenses));
+            SelectedTraits.Add(new SimpleSkillAdditionRacialTrait("Keen Senses", "+2 Perception", new[] { new KeyValuePair<Skills, int>(Skills.Perception, 2) }, typeof(RacialTraitsCategories), BookSource.Core, RacialTraitsCategories.KeenSenses));
         }
 
         public override bool RaceHasOptionalAbilityModifier

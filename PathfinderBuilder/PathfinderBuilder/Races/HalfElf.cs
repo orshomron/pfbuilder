@@ -30,8 +30,8 @@ namespace PathfinderBuilder.Races
 
         public HalfElf()
         {
-            SelectedTraits.Add(new SimpleRacialTrait("Elf Blood", "Half-elves count as both elves and humans for any effect related to race", typeof(RacialTraitsCategories), RacialTraitsCategories.ElfBlood));
-            SelectedTraits.Add(new LowLightVisionRacialTrait(typeof(RacialTraitsCategories), RacialTraitsCategories.LowLightVision));
+            SelectedTraits.Add(new SimpleRacialTrait("Elf Blood", "Half-elves count as both elves and humans for any effect related to race", typeof(RacialTraitsCategories), BookSource.Core, RacialTraitsCategories.ElfBlood));
+            SelectedTraits.Add(new LowLightVisionRacialTrait(typeof(RacialTraitsCategories), RacialTraitsCategories.LowLightVision, BookSource.Core));
         }
 
         public override bool RaceHasOptionalAbilityModifier => true;

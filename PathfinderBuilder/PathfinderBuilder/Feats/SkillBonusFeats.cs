@@ -25,6 +25,7 @@ namespace PathfinderBuilder.Feats
         public string Name => Skill == Skills.INVALID ? NameWithoutSkill : $"Skill Focus [{EnumHelper.GetDescription(typeof(Skills), Skill)}]";
 
         public string Description { get { return "+3 bonus on skill. additional +3 if 10 ranks or more."; } }
+        public BookSource Source { get; } = BookSource.Core;
         public Dictionary<Skills, Dictionary<int, int>> LevelCommulativeBonusBySkill { get; private set; }
 
         public void SetSkill(Skills skill)
@@ -49,6 +50,7 @@ namespace PathfinderBuilder.Feats
         public IPrerequisite Prerequisite { get { return NoPrerequisite.Instance; } }
         public string Name { get { return "Magical Aptitude"; } }
         public string Description { get { return "+2 bonus on spellcraft and use magic device. additional +2 if 10 ranks or more."; } }
+        public BookSource Source { get; } = BookSource.Core;
         public Dictionary<Skills, Dictionary<int, int>> LevelCommulativeBonusBySkill { get; private set; }
     }
 }
