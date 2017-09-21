@@ -4,30 +4,34 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:converters="clr-namespace:GUI.Converters"
-             xmlns:my="clr-namespace:GUI"
-             xmlns:vm="clr-namespace:GUI.ViewModels"
              xmlns:xamlExtensions="clr-namespace:GUI.XAMLExtensions"
              xmlns:pathfinderBuilder="clr-namespace:PathfinderBuilder;assembly=PathfinderBuilder"
              DataContext="{Binding Source={StaticResource Locator}, Path=AbilitiesViewModel}"
              x:Class="GUI.Views.AbilitiesUserControl"
-             mc:Ignorable="d" Width="615" >
+             mc:Ignorable="d" d:DesignWidth="650" >
     <UserControl.Resources>
         <converters:AbilityModifierConverter x:Key="AbilityModifierConverter" />
         <converters:CostOverrunBrushConverter x:Key="CostOverrunColorConverter"/>
         <converters:AbilityCostConverter x:Key="AbilityCostConverter" />
         <converters:SumConverter x:Key="SumConverter" />
         <converters:CombiningConverterMultiBinding x:Key="SumToAbilityModifierConverter" Converter1="{StaticResource SumConverter}" Converter2="{StaticResource AbilityModifierConverter}" />
+        <converters:BooleanToMaxIntegerConverter x:Key="BoolToRawScoreAllowMoreThan18Converter" FalseValue="18" />
+        <converters:TotalLevelToAbilityAdjustmentsConverter x:Key="TotalLevelToAbilityAdjustmentsConverter" />
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition MaxWidth="200px" MinWidth="75px"/>
             <ColumnDefinition Width="120px"/>
-            <ColumnDefinition Width="90px"/>
-            <ColumnDefinition Width="90px"/>
-            <ColumnDefinition Width="90px"/>
-            <ColumnDefinition Width="90px"/>
+            <ColumnDefinition Width="75px"/>
+            <ColumnDefinition Width="75px"/>
+            <ColumnDefinition Width="75px"/>
+            <ColumnDefinition Width="75px"/>
+            <ColumnDefinition Width="75px"/>
+            <ColumnDefinition Width="75px"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition MaxHeight="30" />
             <RowDefinition MaxHeight="30" />
             <RowDefinition MaxHeight="30" />
             <RowDefinition MaxHeight="30" />
@@ -39,8 +43,17 @@
             <RowDefinition />
         </Grid.RowDefinitions>
 
+        <CheckBox Content="Allow more than 18" 
+                  Grid.Row="9"
+                  Grid.Column="3"
+                  Grid.ColumnSpan="2"
+                  Margin="0,24,0,0" 
+                  Height="21" 
+                  IsChecked="{Binding AllowMoreThan18}"
+                  VerticalAlignment="Top"/>
+
         <Label Content="Ability Buy Method:" 
-               Grid.Row="8"
+               Grid.Row="9"
                Grid.Column="0"
                Margin="0,20,0,0" 
                Height="26" 
@@ -50,7 +63,7 @@
                   SelectedValue="{Binding PointBuyOption}"  
                   SelectedValuePath="Value"  
                   Margin="0,20,0,0"
-                  Grid.Row="8"
+                  Grid.Row="9"
                   Grid.Column="1" 
                   Height="26" 
                   VerticalAlignment="Top"/>
@@ -63,10 +76,16 @@
                Content="Racial Trait"/>
         <Label Grid.Row="0" 
                Grid.Column="4" 
-               Content="Final Score"/>
+               Content="Level Bonus"/>
         <Label Grid.Row="0" 
                Grid.Column="5" 
-               Content="Final Modifier"/>
+               Content="Equipment"/>
+        <Label Grid.Row="0" 
+               Grid.Column="6" 
+               Content="Final Score"/>
+        <Label Grid.Row="0" 
+               Grid.Column="7" 
+               Content="Final Mod"/>
         <Label Grid.Row="0" 
                Grid.Column="2" 
                Content="Point Cost"/>
@@ -78,18 +97,43 @@
                          Grid.Column="1" 
                          Value="{Binding Strength}" 
                          Minimum="3"
-                         Maximum="18"
+                         Maximum="{Binding AllowMoreThan18, Converter={StaticResource BoolToRawScoreAllowMoreThan18Converter}, ConverterParameter=255}"
                          Width="120px"/>
+        <xctk:ByteUpDown Grid.Row="1"
+                         Grid.Column="4" 
+                         Value="{Binding LevelStrength}" 
+                         Minimum="0"
+                         Width="75px">
+            <xctk:ByteUpDown.Maximum>
+                <MultiBinding Converter="{StaticResource TotalLevelToAbilityAdjustmentsConverter}" FallbackValue="0">
+                    <Binding Path="TotalLevel" />
+                    <Binding Path="LevelStrength" />
+                    
+                    <Binding Path="LevelStrength" />
+                    <Binding Path="LevelDexterity" />
+                    <Binding Path="LevelConstitution" />
+                    <Binding Path="LevelIntelligence" />
+                    <Binding Path="LevelWisdom" />
+                    <Binding Path="LevelCharisma" />
+                </MultiBinding>
+            </xctk:ByteUpDown.Maximum>
+        </xctk:ByteUpDown>
         <TextBox Grid.Row="1"
                  Grid.Column="3"
                  IsReadOnly="True" 
                  Text="{Binding RaceStrengthModifier, Mode=OneWay}"/>
         <TextBox Grid.Row="1"
-                 Grid.Column="4" 
-                 IsReadOnly="True">
+                 Grid.Column="5"
+                 IsReadOnly="True" 
+                 Text="{Binding EquipmentStrengthModifier, Mode=OneWay}"/>
+        <TextBox Grid.Row="1"
+                 Grid.Column="6" 
+                 IsReadOnly="True"
+                 x:Name="TxtFinalStrength">
             <TextBox.Text>
                 <MultiBinding Converter="{StaticResource SumConverter}">
                     <Binding Path="RaceStrengthModifier" Mode="OneWay"/>
+                    <Binding Path="LevelStrength" />
                     <Binding Path="Strength" />
                 </MultiBinding>
             </TextBox.Text>
@@ -99,10 +143,11 @@
                  IsReadOnly="True"
                  Text="{Binding Strength, Converter={StaticResource AbilityCostConverter}}" />
         <TextBox Grid.Row="1"
-                 Grid.Column="5">
+                 Grid.Column="7">
             <TextBox.Text>
                 <MultiBinding Converter="{StaticResource SumToAbilityModifierConverter}">
                     <Binding Path="RaceStrengthModifier" Mode="OneWay"/>
+                    <Binding Path="LevelStrength" />
                     <Binding Path="Strength" />
                 </MultiBinding>
             </TextBox.Text>
@@ -115,18 +160,43 @@
                          Grid.Column="1" 
                          Value="{Binding Dexterity}" 
                          Minimum="3"
-                         Maximum="18"
+                         Maximum="{Binding AllowMoreThan18, Converter={StaticResource BoolToRawScoreAllowMoreThan18Converter}, ConverterParameter=255}"
                          Width="120px"/>
+        <xctk:ByteUpDown Grid.Row="2"
+                         Grid.Column="4" 
+                         Value="{Binding LevelDexterity}" 
+                         Minimum="0"
+                         Width="75px">
+            <xctk:ByteUpDown.Maximum>
+                <MultiBinding Converter="{StaticResource TotalLevelToAbilityAdjustmentsConverter}" FallbackValue="0">
+                    <Binding Path="TotalLevel" />
+                    <Binding Path="LevelDexterity" />
+                    
+                    <Binding Path="LevelStrength" />
+                    <Binding Path="LevelDexterity" />
+                    <Binding Path="LevelConstitution" />
+                    <Binding Path="LevelIntelligence" />
+                    <Binding Path="LevelWisdom" />
+                    <Binding Path="LevelCharisma" />
+                </MultiBinding>
+            </xctk:ByteUpDown.Maximum>
+        </xctk:ByteUpDown>
         <TextBox Grid.Row="2"
                  Grid.Column="3"
                  IsReadOnly="True" 
                  Text="{Binding RaceDexterityModifier, Mode=OneWay}"/>
         <TextBox Grid.Row="2"
-                 Grid.Column="4" 
-                 IsReadOnly="True">
+                 Grid.Column="5"
+                 IsReadOnly="True" 
+                 Text="{Binding EquipmentDexterityModifier, Mode=OneWay}"/>
+        <TextBox Grid.Row="2"
+                 Grid.Column="6" 
+                 IsReadOnly="True"
+                 x:Name="TxtFinalDexterity">
             <TextBox.Text>
                 <MultiBinding Converter="{StaticResource SumConverter}">
                     <Binding Path="RaceDexterityModifier" Mode="OneWay"/>
+                    <Binding Path="LevelDexterity" />
                     <Binding Path="Dexterity" />
                 </MultiBinding>
             </TextBox.Text>
@@ -136,10 +206,11 @@
                  IsReadOnly="True"
                  Text="{Binding Dexterity, Converter={StaticResource AbilityCostConverter}}" />
         <TextBox Grid.Row="2"
-                 Grid.Column="5">
+                 Grid.Column="7">
             <TextBox.Text>
                 <MultiBinding Converter="{StaticResource SumToAbilityModifierConverter}">
                     <Binding Path="RaceDexterityModifier" Mode="OneWay"/>
+                    <Binding Path="LevelDexterity" />
                     <Binding Path="Dexterity" />
                 </MultiBinding>
             </TextBox.Text>
@@ -152,18 +223,43 @@
                          Grid.Column="1" 
                          Value="{Binding Constitution}" 
                          Minimum="3"
-                         Maximum="18"
+                         Maximum="{Binding AllowMoreThan18, Converter={StaticResource BoolToRawScoreAllowMoreThan18Converter}, ConverterParameter=255}"
                          Width="120px"/>
+        <xctk:ByteUpDown Grid.Row="3"
+                         Grid.Column="4" 
+                         Value="{Binding LevelConstitution}" 
+                         Minimum="0"
+                         Width="75px">
+            <xctk:ByteUpDown.Maximum>
+                <MultiBinding Converter="{StaticResource TotalLevelToAbilityAdjustmentsConverter}" FallbackValue="0">
+                    <Binding Path="TotalLevel" />
+                    <Binding Path="LevelConstitution" />
+                    
+                    <Binding Path="LevelStrength" />
+                    <Binding Path="LevelDexterity" />
+                    <Binding Path="LevelConstitution" />
+                    <Binding Path="LevelIntelligence" />
+                    <Binding Path="LevelWisdom" />
+                    <Binding Path="LevelCharisma" />
+                </MultiBinding>
+            </xctk:ByteUpDown.Maximum>
+        </xctk:ByteUpDown>
         <TextBox Grid.Row="3"
                  Grid.Column="3"
                  IsReadOnly="True" 
                  Text="{Binding RaceConstitutionModifier, Mode=OneWay}"/>
         <TextBox Grid.Row="3"
-                 Grid.Column="4" 
-                 IsReadOnly="True">
+                 Grid.Column="5"
+                 IsReadOnly="True" 
+                 Text="{Binding EquipmentConstitutionModifier, Mode=OneWay}"/>
+        <TextBox Grid.Row="3"
+                 Grid.Column="6" 
+                 IsReadOnly="True"
+                 x:Name="TxtFinalConstitution">
             <TextBox.Text>
                 <MultiBinding Converter="{StaticResource SumConverter}">
                     <Binding Path="RaceConstitutionModifier" Mode="OneWay"/>
+                    <Binding Path="LevelConstitution" />
                     <Binding Path="Constitution" />
                 </MultiBinding>
             </TextBox.Text>
@@ -173,10 +269,11 @@
                  IsReadOnly="True"
                  Text="{Binding Constitution, Converter={StaticResource AbilityCostConverter}}" />
         <TextBox Grid.Row="3"
-                 Grid.Column="5">
+                 Grid.Column="7">
             <TextBox.Text>
                 <MultiBinding Converter="{StaticResource SumToAbilityModifierConverter}">
                     <Binding Path="RaceConstitutionModifier" Mode="OneWay"/>
+                    <Binding Path="LevelConstitution" />
                     <Binding Path="Constitution" />
                 </MultiBinding>
             </TextBox.Text>
@@ -189,18 +286,43 @@
                          Grid.Column="1" 
                          Value="{Binding Intelligence}" 
                          Minimum="3"
-                         Maximum="18"
+                         Maximum="{Binding AllowMoreThan18, Converter={StaticResource BoolToRawScoreAllowMoreThan18Converter}, ConverterParameter=255}"
                          Width="120px"/>
+        <xctk:ByteUpDown Grid.Row="4"
+                         Grid.Column="4" 
+                         Value="{Binding LevelIntelligence}" 
+                        Minimum="0"
+                         Width="75px">
+            <xctk:ByteUpDown.Maximum>
+                <MultiBinding Converter="{StaticResource TotalLevelToAbilityAdjustmentsConverter}" FallbackValue="0">
+                    <Binding Path="TotalLevel" />
+                    <Binding Path="LevelIntelligence" />
+                    
+                    <Binding Path="LevelStrength" />
+                    <Binding Path="LevelDexterity" />
+                    <Binding Path="LevelConstitution" />
+                    <Binding Path="LevelIntelligence" />
+                    <Binding Path="LevelWisdom" />
+                    <Binding Path="LevelCharisma" />
+                </MultiBinding>
+            </xctk:ByteUpDown.Maximum>
+        </xctk:ByteUpDown>
         <TextBox Grid.Row="4"
                  Grid.Column="3"
                  IsReadOnly="True" 
                  Text="{Binding RaceIntelligenceModifier, Mode=OneWay}"/>
         <TextBox Grid.Row="4"
-                 Grid.Column="4" 
-                 IsReadOnly="True">
+                 Grid.Column="5"
+                 IsReadOnly="True" 
+                 Text="{Binding EquipmentIntelligenceModifier, Mode=OneWay}"/>
+        <TextBox Grid.Row="4"
+                 Grid.Column="6" 
+                 IsReadOnly="True"
+                 x:Name="TxtFinalIntelligence">
             <TextBox.Text>
                 <MultiBinding Converter="{StaticResource SumConverter}">
                     <Binding Path="RaceIntelligenceModifier" Mode="OneWay"/>
+                    <Binding Path="LevelIntelligence" />
                     <Binding Path="Intelligence" />
                 </MultiBinding>
             </TextBox.Text>
@@ -210,10 +332,11 @@
                  IsReadOnly="True"
                  Text="{Binding Intelligence, Converter={StaticResource AbilityCostConverter}}" />
         <TextBox Grid.Row="4"
-                 Grid.Column="5">
+                 Grid.Column="7">
             <TextBox.Text>
                 <MultiBinding Converter="{StaticResource SumToAbilityModifierConverter}">
                     <Binding Path="RaceIntelligenceModifier" Mode="OneWay"/>
+                    <Binding Path="LevelIntelligence" />
                     <Binding Path="Intelligence" />
                 </MultiBinding>
             </TextBox.Text>
@@ -226,18 +349,43 @@
                          Grid.Column="1" 
                          Value="{Binding Wisdom}" 
                          Minimum="3"
-                         Maximum="18"
+                         Maximum="{Binding AllowMoreThan18, Converter={StaticResource BoolToRawScoreAllowMoreThan18Converter}, ConverterParameter=255}"
                          Width="120px"/>
+        <xctk:ByteUpDown Grid.Row="5"
+                         Grid.Column="4" 
+                         Value="{Binding LevelWisdom}" 
+                         Minimum="0"
+                         Width="75px">
+            <xctk:ByteUpDown.Maximum>
+                <MultiBinding Converter="{StaticResource TotalLevelToAbilityAdjustmentsConverter}" FallbackValue="0">
+                    <Binding Path="TotalLevel" />
+                    <Binding Path="LevelWisdom" />
+                    
+                    <Binding Path="LevelStrength" />
+                    <Binding Path="LevelDexterity" />
+                    <Binding Path="LevelConstitution" />
+                    <Binding Path="LevelIntelligence" />
+                    <Binding Path="LevelWisdom" />
+                    <Binding Path="LevelCharisma" />
+                </MultiBinding>
+            </xctk:ByteUpDown.Maximum>
+        </xctk:ByteUpDown>
         <TextBox Grid.Row="5"
                  Grid.Column="3"
                  IsReadOnly="True" 
                  Text="{Binding RaceWisdomModifier, Mode=OneWay}"/>
         <TextBox Grid.Row="5"
-                 Grid.Column="4" 
-                 IsReadOnly="True">
+                 Grid.Column="5"
+                 IsReadOnly="True" 
+                 Text="{Binding EquipmentWisdomModifier, Mode=OneWay}"/>
+        <TextBox Grid.Row="5"
+                 Grid.Column="6" 
+                 IsReadOnly="True"
+                 x:Name="TxtFinalWisdom">
             <TextBox.Text>
                 <MultiBinding Converter="{StaticResource SumConverter}">
                     <Binding Path="RaceWisdomModifier" Mode="OneWay"/>
+                    <Binding Path="LevelWisdom" />
                     <Binding Path="Wisdom" />
                 </MultiBinding>
             </TextBox.Text>
@@ -247,10 +395,11 @@
                  IsReadOnly="True"
                  Text="{Binding Wisdom, Converter={StaticResource AbilityCostConverter}}" />
         <TextBox Grid.Row="5"
-                 Grid.Column="5">
+                 Grid.Column="7">
             <TextBox.Text>
                 <MultiBinding Converter="{StaticResource SumToAbilityModifierConverter}">
                     <Binding Path="RaceWisdomModifier" Mode="OneWay"/>
+                    <Binding Path="LevelWisdom" />
                     <Binding Path="Wisdom" />
                 </MultiBinding>
             </TextBox.Text>
@@ -263,18 +412,44 @@
                          Grid.Column="1" 
                          Value="{Binding Charisma}" 
                          Minimum="3"
-                         Maximum="18"
+                         Maximum="{Binding AllowMoreThan18, Converter={StaticResource BoolToRawScoreAllowMoreThan18Converter}, ConverterParameter=255}"
                          Width="120px"/>
+        <xctk:ByteUpDown Grid.Row="6"
+                         Grid.Column="4" 
+                         Value="{Binding LevelCharisma}" 
+                         Minimum="0"
+                         Width="75px">
+            <xctk:ByteUpDown.Maximum>
+                <MultiBinding Converter="{StaticResource TotalLevelToAbilityAdjustmentsConverter}" FallbackValue="0">
+                    <Binding Path="TotalLevel" />
+                    <Binding Path="LevelCharisma" />
+                    
+                    <Binding Path="LevelCharisma" />
+                    <Binding Path="LevelStrength" />
+                    <Binding Path="LevelDexterity" />
+                    <Binding Path="LevelConstitution" />
+                    <Binding Path="LevelIntelligence" />
+                    <Binding Path="LevelWisdom" />
+                    <Binding Path="LevelCharisma" />
+                </MultiBinding>
+            </xctk:ByteUpDown.Maximum>
+        </xctk:ByteUpDown>
         <TextBox Grid.Row="6"
                  Grid.Column="3"
                  IsReadOnly="True" 
                  Text="{Binding RaceCharismaModifier, Mode=OneWay}"/>
         <TextBox Grid.Row="6"
-                 Grid.Column="4" 
-                 IsReadOnly="True">
+                 Grid.Column="5"
+                 IsReadOnly="True" 
+                 Text="{Binding EquipmentCharismaModifier, Mode=OneWay}"/>
+        <TextBox Grid.Row="6"
+                 Grid.Column="6" 
+                 IsReadOnly="True"
+                 x:Name="TxtFinalCharisma">
             <TextBox.Text>
                 <MultiBinding Converter="{StaticResource SumConverter}">
                     <Binding Path="RaceCharismaModifier" Mode="OneWay"/>
+                    <Binding Path="LevelCharisma" />
                     <Binding Path="Charisma" />
                 </MultiBinding>
             </TextBox.Text>
@@ -284,11 +459,46 @@
                  IsReadOnly="True"
                  Text="{Binding Charisma, Converter={StaticResource AbilityCostConverter}}" />
         <TextBox Grid.Row="6"
-                 Grid.Column="5">
+                 Grid.Column="7">
             <TextBox.Text>
                 <MultiBinding Converter="{StaticResource SumToAbilityModifierConverter}">
                     <Binding Path="RaceCharismaModifier" Mode="OneWay"/>
+                    <Binding Path="LevelCharisma" />
                     <Binding Path="Charisma" />
+                </MultiBinding>
+            </TextBox.Text>
+        </TextBox>
+
+        <Label Grid.Row="8" 
+               Grid.Column="1" 
+               Content="Simple Sum:"/>
+        <TextBox IsReadOnly="True"
+                 x:Name="TxtSumRaw"
+                 Grid.Row="8"
+                 Grid.Column="2">
+            <TextBox.Text>
+                <MultiBinding Converter="{StaticResource SumConverter}" FallbackValue="0">
+                    <Binding Path="Strength"/>
+                    <Binding Path="Dexterity" />
+                    <Binding Path="Constitution" />
+                    <Binding Path="Intelligence" />
+                    <Binding Path="Wisdom" />
+                    <Binding Path="Charisma" />
+                </MultiBinding>
+            </TextBox.Text>
+        </TextBox>
+        <TextBox IsReadOnly="True"
+                 x:Name="TxtSumFinal"
+                 Grid.Row="8"
+                 Grid.Column="6">
+            <TextBox.Text>
+                <MultiBinding Converter="{StaticResource SumConverter}" FallbackValue="0">
+                    <Binding ElementName="TxtFinalStrength" Path="Text"/>
+                    <Binding ElementName="TxtFinalDexterity" Path="Text"/>
+                    <Binding ElementName="TxtFinalConstitution" Path="Text"/>
+                    <Binding ElementName="TxtFinalIntelligence" Path="Text"/>
+                    <Binding ElementName="TxtFinalWisdom" Path="Text"/>
+                    <Binding ElementName="TxtFinalCharisma" Path="Text"/>
                 </MultiBinding>
             </TextBox.Text>
         </TextBox>
@@ -297,7 +507,7 @@
                Grid.Column="1" 
                Content="Total Cost:"/>
         <TextBox IsReadOnly="True"
-                 x:Name="TotalPointCostTxt"
+                 x:Name="TxtTotalPointCost"
                  Grid.Row="7"
                  Grid.Column="2" >
             <TextBox.Text>
@@ -312,7 +522,7 @@
             </TextBox.Text>
             <TextBox.Background>
                 <MultiBinding Converter="{StaticResource CostOverrunColorConverter}" Mode="OneWay">
-                    <Binding ElementName="TotalPointCostTxt" Path="Text"/>
+                    <Binding ElementName="TxtTotalPointCost" Path="Text"/>
                     <Binding Path="PointBuyOption" />
                 </MultiBinding>
             </TextBox.Background>

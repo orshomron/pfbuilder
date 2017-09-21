@@ -49,11 +49,9 @@ namespace GUI.ViewModels
         }
     }
 
-    public class LanguagesViewModel : BaseViewModel
+    public class LanguagesViewModel : BaseViewModel<Character>
     {
         private static readonly AbilityModifierConverterToInt AbilityToModifierConverter = new AbilityModifierConverterToInt();
-
-        private readonly CharacterViewModel _owner;
 
         private readonly ObservableCollection<LanguageViewModel> _knownLanguages;
         private readonly ObservableCollection<LanguageViewModel> _availableLanguages = new ObservableCollection<LanguageViewModel>();
@@ -62,14 +60,8 @@ namespace GUI.ViewModels
         private readonly MoveLanguagesKnownToAvailableCommand _knownToAvailableCommand;
         private readonly MoveLanguagesAvailableToKnownCommand _availableToKnownCommand;
 
-        public LanguagesViewModel(CharacterViewModel owner)
+        public LanguagesViewModel(Character c) : base(c)
         {
-            _owner = owner;
-            _owner.RaceVM.PropertyChanged += CharacterVMOnPropertyChanged;
-            _owner.RaceVM.PropertyChanged += RaceVMOnPropertyChanged;
-            _owner.AbilitiesVM.PropertyChanged += CharacterVMOnPropertyChanged;
-            _owner.SkillsVM.PropertyChanged += CharacterVMOnPropertyChanged;
-
             _knownLanguages = new ObservableCollection<LanguageViewModel>();
             _availableLanguages = new ObservableCollection<LanguageViewModel>();
             _knownLanguages.CollectionChanged += LangaugeCollectionsChanged;
@@ -95,12 +87,12 @@ namespace GUI.ViewModels
             _knownLanguages.Clear();
             _availableLanguages.Clear();
             
-            foreach (var startingLanguage in _owner.Character.Race.StartingLanguages)
+            foreach (var startingLanguage in Model.Race.StartingLanguages)
             {
                 _knownLanguages.Add(new LanguageViewModel(true, startingLanguage));
             }
 
-            foreach (var availableLanguage in _owner.Character.Race.AvailableLanguages)
+            foreach (var availableLanguage in Model.Race.AvailableLanguages)
             {
                 _availableLanguages.Add(new LanguageViewModel(false, availableLanguage));
             }
@@ -108,8 +100,8 @@ namespace GUI.ViewModels
 
         private void CharacterVMOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
-            if (_owner.Character.SkillRanks.ContainsKey(Skills.Linguistics) &&
-                _owner.Character.SkillRanks[Skills.Linguistics] > 0 &&
+            if (Model.SkillRanks.ContainsKey(Skills.Linguistics) &&
+                Model.SkillRanks[Skills.Linguistics] > 0 &&
                 !_hasLinguistics)
             {
                 _hasLinguistics = true;
@@ -120,8 +112,8 @@ namespace GUI.ViewModels
                     _availableLanguages.Add(new LanguageViewModel(false, language));
                 }
             }
-            if (_hasLinguistics && (!_owner.Character.SkillRanks.ContainsKey(Skills.Linguistics) ||
-                                    _owner.Character.SkillRanks[Skills.Linguistics] == 0))
+            if (_hasLinguistics && (!Model.SkillRanks.ContainsKey(Skills.Linguistics) ||
+                                    Model.SkillRanks[Skills.Linguistics] == 0))
             {
                 _hasLinguistics = false;
 
@@ -129,7 +121,7 @@ namespace GUI.ViewModels
 
                 foreach (var availableLanguage in _availableLanguages)
                 {
-                    if (!_owner.Character.Race.AvailableLanguages.Contains(availableLanguage.Language))
+                    if (!Model.Race.AvailableLanguages.Contains(availableLanguage.Language))
                     {
                         removeList.Add(availableLanguage);
                     }
@@ -142,7 +134,7 @@ namespace GUI.ViewModels
                 removeList.Clear();
                 foreach (var selectedLanguage in _knownLanguages)
                 {
-                    if (!_owner.Character.Race.AvailableLanguages.Contains(selectedLanguage.Language) && !_owner.Character.Race.StartingLanguages.Contains(selectedLanguage.Language))
+                    if (!Model.Race.AvailableLanguages.Contains(selectedLanguage.Language) && !Model.Race.StartingLanguages.Contains(selectedLanguage.Language))
                     {
                         removeList.Add(selectedLanguage);
                     }
@@ -168,11 +160,12 @@ namespace GUI.ViewModels
         {
             get
             {
-                var fromInt = Math.Max(0, (int)AbilityToModifierConverter.Convert(_owner.AbilitiesVM.FinalIntelligence, typeof(int), null, null));
+                var fromInt = Math.Max(0, (int)AbilityToModifierConverter.Convert(Model.GetCalculatedAttribute(Attributes.Intelligence), typeof(int), null, null));
 
-                var fromLinguistics = _owner.SkillsVM.Skills.Single(s => s.Skill == Skills.Linguistics).Ranks;
-
-                var isDoubleLinguistics = _owner.Character.Race.SelectedTraits.Any(t => t is IDoubleLinguistics);
+                int fromLinguistics;
+                Model.SkillRanks.TryGetValue(Skills.Linguistics, out fromLinguistics);
+                
+                var isDoubleLinguistics = Model.Race.SelectedTraits.Any(t => t is IDoubleLinguistics);
 
                 if (isDoubleLinguistics)
                 {
@@ -185,7 +178,7 @@ namespace GUI.ViewModels
 
         public int LeftToSelect
         {
-            get { return TotalToSelect - _knownLanguages.Count + _owner.Character.Race.StartingLanguages.Count; }
+            get { return TotalToSelect - _knownLanguages.Count + Model.Race.StartingLanguages.Count; }
         }
 
         public LanguageViewModel SelectedAvailable

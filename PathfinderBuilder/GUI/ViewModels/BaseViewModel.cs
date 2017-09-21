@@ -6,9 +6,9 @@ namespace GUI.ViewModels
 {
     public abstract class BaseViewModel<T> : BaseViewModel
     {
-        protected T Model { get; }
+        public T Model { get; }
 
-        public BaseViewModel(T model)
+        protected BaseViewModel(T model)
         {
             Model = model;
         }
@@ -23,8 +23,8 @@ namespace GUI.ViewModels
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+            var handler = PropertyChanged;
+            handler?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

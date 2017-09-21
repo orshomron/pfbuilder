@@ -99,6 +99,7 @@
     <Compile Include="Commands\CreateClassLevelCommand.cs" />
     <Compile Include="Commands\MoveLanguagesCommand.cs" />
     <Compile Include="Converters\ArchtypeAvailablilityUsageToBrushConverter.cs" />
+    <Compile Include="Converters\BooleanToMaxIntegerConverter.cs" />
     <Compile Include="Converters\BooleanToTransperentBrushConverter.cs" />
     <Compile Include="Converters\ReplacedTraitsToVisibilityConverter.cs" />
     <Compile Include="Converters\TooLowToBrushConverter.cs" />
@@ -112,6 +113,7 @@
     <Compile Include="Converters\EnumToShortNameConverter.cs" />
     <Compile Include="Converters\ProficiencyToLabelConverter.cs" />
     <Compile Include="Converters\SumConverter.cs" />
+    <Compile Include="Converters\TotalLevelToAbilityAdjustmentsConverter.cs" />
     <Compile Include="MyContainer.cs" />
     <Compile Include="Selectors\FeatViewSelector.cs" />
     <Compile Include="Selectors\LabelOnlyClassTemplateSelector.cs" />

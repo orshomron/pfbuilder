@@ -42,9 +42,9 @@ namespace GUI.ViewModels
             RaceVM = new RaceViewModel(this);
             AbilitiesVM = new AbilitiesViewModel(Character);
             ClassesVM = new ClassesViewModel(this);
-            SkillsVM = new SkillsViewModel(this);
+            SkillsVM = new SkillsViewModel(Character);
             FeatsVM = new FeatsViewModel(this);
-            LanguagesVM = new LanguagesViewModel(this);
+            LanguagesVM = new LanguagesViewModel(Character);
 
         }
 

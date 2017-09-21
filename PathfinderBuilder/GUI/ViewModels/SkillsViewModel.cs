@@ -16,13 +16,9 @@ namespace GUI.ViewModels
         private int _ranks;
         private bool _proficient;
 
-        public AbilitiesViewModel Abilities { get; private set; }
-
-        private readonly RaceViewModel _race;
         private readonly SkillsViewModel _owner;
-        private readonly SkillEnum _skill;
 
-        public SkillEnum Skill { get { return _skill; } }
+        public SkillEnum Skill { get; }
 
         public int Ranks
         {
@@ -31,12 +27,12 @@ namespace GUI.ViewModels
             {
                 _ranks = value;
                 OnPropertyChanged();
-                OnPropertyChanged("FinalScore");
+                OnPropertyChanged(nameof(FinalScore));
                 _owner.SkillRankChanged();
             }
         }
 
-        public bool Proficient { get { return _proficient; } set { _proficient = value; OnPropertyChanged(); OnPropertyChanged("FinalScore"); } }
+        public bool Proficient { get { return _proficient; } set { _proficient = value; OnPropertyChanged(); OnPropertyChanged(nameof(FinalScore)); } }
 
         public Attributes Attribute { get; set; }
 
@@ -44,21 +40,18 @@ namespace GUI.ViewModels
         {
             get
             {
-                var raceModifier = _race.Race.SelectedTraits.OfType<IAddToSkills>()
+                var raceModifier = _owner.Model.Race.SelectedTraits.OfType<IAddToSkills>()
                         .Where(t => t.SkillAndModifier.ContainsKey(Skill))
                         .Sum(t => t.SkillAndModifier[Skill]);
 
-                return Ranks + (Proficient && Ranks > 0 ? 3 : 0) + (int)ModifierConverter.Convert(Abilities.GetAttribute(Attribute), typeof(int), null, null) + raceModifier;
+                return Ranks + (Proficient && Ranks > 0 ? 3 : 0) + (int)ModifierConverter.Convert(_owner.Model.GetCalculatedAttribute(Attribute), typeof(int), null, null) + raceModifier;
             }
         }
 
         public SkillViewModel(SkillsViewModel owner, SkillEnum skill, bool proficient)
         {
-            Abilities = owner.Abilities;
-            Abilities.PropertyChanged += Abilities_PropertyChanged;
-            _race = owner.Race;
             _owner = owner;
-            _skill = skill;
+            Skill = skill;
             Proficient = proficient;
             Ranks = 0;
             Attribute = Skill.GetAttribute();
@@ -81,14 +74,10 @@ namespace GUI.ViewModels
                 return Math.Min(Ranks + _owner.CurrentAvailableRanks, _owner.TotalLevel);
             }
         }
-
-        void Abilities_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            OnPropertyChanged("FinalScore");
-        }
-
+        
         public override void ReloadModelValues()
         {
+            OnPropertyChanged(nameof(FinalScore));
         }
     }
 
@@ -103,16 +92,13 @@ namespace GUI.ViewModels
         }
     }
 
-    public class SkillsViewModel : BaseViewModel
+    public class SkillsViewModel : BaseViewModel<Character>
     {
         private static readonly AbilityModifierConverterToInt ModifierConverter = new AbilityModifierConverterToInt();
         private readonly ObservableCollection<SkillViewModel> _skills = new ObservableCollection<SkillViewModel>();
-        private readonly CharacterViewModel _owner;
 
-        public AbilitiesViewModel Abilities { get { return _owner.AbilitiesVM; } }
-        public RaceViewModel Race { get { return _owner.RaceVM; } }
 
-        public int TotalAvailableRanks { get { return _owner.ClassesVM.Levels.Sum(vm => vm.Level * Math.Max(1, vm.Instance.SkillPointsPerLevel + (int)ModifierConverter.Convert(_owner.AbilitiesVM.FinalIntelligence, typeof(int), null, null))); } }
+        public int TotalAvailableRanks { get { return Model.Levels.Sum(vm => vm.Value * Math.Max(1, vm.Key.SkillPointsPerLevel + (int)ModifierConverter.Convert(Model.GetCalculatedAttribute(Attributes.Intelligence), typeof(int), null, null))); } }
 
         public int CurrentAvailableRanks
         {
@@ -123,16 +109,12 @@ namespace GUI.ViewModels
             }
         }
 
-        public int TotalLevel { get { return _owner.ClassesVM.TotalLevel; } }
+        public int TotalLevel { get { return Model.Levels.Sum(kvp => kvp.Value); } }
 
-        public ObservableCollection<SkillViewModel> Skills { get { return _skills; } }
+        public ObservableCollection<SkillViewModel> Skills => _skills;
 
-        public SkillsViewModel(CharacterViewModel character)
+        public SkillsViewModel(Character character) : base(character)
         {
-            _owner = character;
-            _owner.ClassesVM.PropertyChanged += ClassesVMOnPropertyChanged;
-            _owner.AbilitiesVM.PropertyChanged += AbilitiesVMOnPropertyChanged;
-
             var tmp = new List<SkillViewModel>();
 
             foreach (Skills skill in Enum.GetValues(typeof(SkillEnum)))
@@ -162,44 +144,36 @@ namespace GUI.ViewModels
             }
         }
 
-        private void AbilitiesVMOnPropertyChanged(object sender, PropertyChangedEventArgs args)
-        {
-            OnPropertyChanged("TotalLevel");
-            OnPropertyChanged("TotalAvailableRanks");
-            OnPropertyChanged("CurrentAvailableRanks");
-        }
-
-        private void ClassesVMOnPropertyChanged(object sender, PropertyChangedEventArgs args)
-        {
-            var allClassSkills = _owner.Character.Levels.SelectMany(c => c.Key.ClassSkills).Distinct().ToList();
-
-            foreach (var skill in _skills)
-            {
-                skill.Proficient = allClassSkills.Contains(skill.Skill);
-            }
-            OnPropertyChanged("TotalLevel");
-            OnPropertyChanged("TotalAvailableRanks");
-            OnPropertyChanged("CurrentAvailableRanks");
-        }
-
         private void SkillOnPropertyChanged(object sender, PropertyChangedEventArgs eventArgs)
         {
             foreach (var skill in _skills)
             {
-                _owner.Character.SkillRanks[skill.Skill] = skill.Ranks;
-                _owner.Character.FinalSkillModifiers[skill.Skill] = skill.FinalScore;
+                Model.SkillRanks[skill.Skill] = skill.Ranks;
+                Model.FinalSkillModifiers[skill.Skill] = skill.FinalScore;
             }
         }
 
         public void SkillRankChanged()
         {
-            OnPropertyChanged("CurrentAvailableRanks");
-            _owner.ClassesVM.PrerequestiesMayChanged();
+            OnPropertyChanged(nameof(CurrentAvailableRanks));
         }
 
         public override void ReloadModelValues()
         {
-            
+            var allClassSkills = Model.Levels.SelectMany(c => c.Key.ClassSkills).Distinct().ToList();
+
+            foreach (var skill in _skills)
+            {
+                skill.Proficient = allClassSkills.Contains(skill.Skill);
+            }
+
+            OnPropertyChanged(nameof(TotalLevel));
+            OnPropertyChanged(nameof(TotalAvailableRanks));
+            OnPropertyChanged(nameof(CurrentAvailableRanks));
+            foreach (var vm in _skills)
+            {
+                vm.ReloadModelValues();
+            }
         }
     }
 }

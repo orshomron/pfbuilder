@@ -10,7 +10,7 @@ namespace GUI
 
         public MyContainer()
         {
-            _container = new UnityContainer().LoadConfiguration();
+            _container = new UnityContainer();
         }
 
         public IUnityContainer Container
