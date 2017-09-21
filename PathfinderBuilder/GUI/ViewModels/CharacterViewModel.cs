@@ -39,7 +39,7 @@ namespace GUI.ViewModels
         {
             Character = new Character();
 
-            RaceVM = new RaceViewModel(this);
+            RaceVM = new RaceViewModel(Character);
             AbilitiesVM = new AbilitiesViewModel(Character);
             ClassesVM = new ClassesViewModel(this);
             SkillsVM = new SkillsViewModel(Character);

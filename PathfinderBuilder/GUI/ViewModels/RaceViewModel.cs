@@ -10,84 +10,37 @@ using PathfinderBuilder.Races;
 
 namespace GUI.ViewModels
 {
-    public class RaceViewModel : BaseViewModel
+    public class RaceViewModel : BaseViewModel<Character>
     {
-        private readonly ObservableCollection<Race> _myRaceInstances = new ObservableCollection<Race>
-        {
-            new Dwarf(),
-            new Elf(),
-            new Gnome(),
-            new HalfElf(),
-            new Halfling(),
-            new HalfOrc(),
-            new Human(),
-            new Catfolk()
-        };
-
-        private Race _race;
-        private readonly CharacterViewModel _owner;
         private ObservableCollection<GenericRacialTraitViewModel> _availableTraits;
         private ObservableCollection<GenericRacialTraitViewModel> _selectedTraits;
         private GenericRacialTraitViewModel _selectedAvailableTrait;
         private GenericRacialTraitViewModel _selectedSelectedTrait;
-        private readonly RacialTraitCommand _moveFromAvailableToSelectedCommand;
-        private RemoveRacialTraitCommand _removeSelectedTraitCommand;
 
-        public RaceViewModel(CharacterViewModel owner)
+        public RaceViewModel(Character c) : base(c)
         {
-            _owner = owner;
-            Race = _myRaceInstances.First();
-            _moveFromAvailableToSelectedCommand = new RacialTraitCommand(this);
-            _removeSelectedTraitCommand = new RemoveRacialTraitCommand(this);
+            // make sure the race instance coming from character is maintained
+            var replacedRace = RacesList.Single(r => r.GetType() == Model.Race.GetType());
+            var index = RacesList.IndexOf(replacedRace);
+            RacesList.RemoveAt(index);
+            RacesList.Insert(index, Model.Race);
+            Race = Model.Race;
+
+            MoveFromAvailableToSelectedCommand = new RacialTraitCommand(this);
+            DeleteSelectedTraitCommand = new RemoveRacialTraitCommand(this);
         }
 
-        public int IntelligenceModifier
-        {
-            get
-            {
-                return _race.IntelligenceModifier;
-            }
-        }
+        public int IntelligenceModifier => Model.Race.IntelligenceModifier;
 
-        public int WisdomModifier
-        {
-            get
-            {
-                return _race.WisdomModifier;
-            }
-        }
+        public int WisdomModifier => Model.Race.WisdomModifier;
 
-        public int CharismaModifier
-        {
-            get
-            {
-                return _race.CharismaModifier;
-            }
-        }
+        public int CharismaModifier => Model.Race.CharismaModifier;
 
-        public int ConstitutionModifier
-        {
-            get
-            {
-                return _race.ConstitutionModifier;
-            }
-        }
+        public int ConstitutionModifier => Model.Race.ConstitutionModifier;
 
-        public int DexterityModifier
-        {
-            get
-            {
-                return _race.DexterityModifier;
-            }
-        }
+        public int DexterityModifier => Model.Race.DexterityModifier;
 
-        public int StrengthModifier
-        {
-            get
-            {
-                return _race.StrengthModifier;
-            }
-        }
+        public int StrengthModifier => Model.Race.StrengthModifier;
 
         public Attributes SelectedOptionalAbilityModifier
         {
@@ -109,26 +62,23 @@ namespace GUI.ViewModels
                 }
                 raceOptional.SelectedAttribute = value;
                 OnPropertyChanged();
-                OnPropertyChanged("StrengthModifier");
-                OnPropertyChanged("DexterityModifier");
-                OnPropertyChanged("ConstitutionModifier");
-                OnPropertyChanged("IntelligenceModifier");
-                OnPropertyChanged("WisdomModifier");
-                OnPropertyChanged("CharismaModifier");
-                OnPropertyChanged("AbilityModifiersString");
+                OnPropertyChanged(nameof(StrengthModifier));
+                OnPropertyChanged(nameof(DexterityModifier));
+                OnPropertyChanged(nameof(ConstitutionModifier));
+                OnPropertyChanged(nameof(IntelligenceModifier));
+                OnPropertyChanged(nameof(WisdomModifier));
+                OnPropertyChanged(nameof(CharismaModifier));
+                OnPropertyChanged(nameof(AbilityModifiersString));
             }
         }
 
-        public bool RaceHasOptionalAbilityModifier
-        {
-            get { return _race.RaceHasOptionalAbilityModifier; }
-        }
+        public bool RaceHasOptionalAbilityModifier => Model.Race.RaceHasOptionalAbilityModifier;
 
         public Race Race
         {
             get
             {
-                return _race;
+                return Model.Race;
             }
             set
             {
@@ -141,54 +91,54 @@ namespace GUI.ViewModels
                     _availableTraits.CollectionChanged -= TraitsChanged;
                 }
 
-                _race = value;
-                _owner.Character.Race = value;
+                Model.Race = value;
 
-                _selectedTraits = new ObservableCollection<GenericRacialTraitViewModel>(_race.SelectedTraits.Select(t => new GenericRacialTraitViewModel(t, this)));
-                _availableTraits = new ObservableCollection<GenericRacialTraitViewModel>(_race.AvailableTraits.Select(t => new GenericRacialTraitViewModel(t, this)));
+                _selectedTraits = new ObservableCollection<GenericRacialTraitViewModel>(Model.Race.SelectedTraits.Select(t => new GenericRacialTraitViewModel(t, this)));
+                _availableTraits = new ObservableCollection<GenericRacialTraitViewModel>(Model.Race.AvailableTraits.Select(t => new GenericRacialTraitViewModel(t, this)));
 
                 _selectedTraits.CollectionChanged += TraitsChanged;
                 _availableTraits.CollectionChanged += TraitsChanged;
 
                 OnPropertyChanged();
-                OnPropertyChanged("RaceHasOptionalAbilityModifier");
-                OnPropertyChanged("StrengthModifier");
-                OnPropertyChanged("DexterityModifier");
-                OnPropertyChanged("ConstitutionModifier");
-                OnPropertyChanged("IntelligenceModifier");
-                OnPropertyChanged("WisdomModifier");
-                OnPropertyChanged("CharismaModifier");
-                OnPropertyChanged("SelectedOptionalAbilityModifier");
-                OnPropertyChanged("Size");
-                OnPropertyChanged("AbilityModifiersString");
-                OnPropertyChanged("SelectedTraits");
-                OnPropertyChanged("AvailableTraits");
+                OnPropertyChanged(nameof(RaceHasOptionalAbilityModifier));
+                OnPropertyChanged(nameof(StrengthModifier));
+                OnPropertyChanged(nameof(DexterityModifier));
+                OnPropertyChanged(nameof(ConstitutionModifier));
+                OnPropertyChanged(nameof(IntelligenceModifier));
+                OnPropertyChanged(nameof(WisdomModifier));
+                OnPropertyChanged(nameof(CharismaModifier));
+                OnPropertyChanged(nameof(SelectedOptionalAbilityModifier));
+                OnPropertyChanged(nameof(Size));
+                OnPropertyChanged(nameof(AbilityModifiersString));
+                OnPropertyChanged(nameof(SelectedTraits));
+                OnPropertyChanged(nameof(AvailableTraits));
             }
         }
 
         private void TraitsChanged(object sender, NotifyCollectionChangedEventArgs args)
         {
-            _race.SelectedTraits = new List<IRacialTrait>(_selectedTraits.Select(t => t.Trait));
-            _race.AvailableTraits = new List<IRacialTrait>(_availableTraits.Select(t => t.Trait));
-            OnPropertyChanged("TotalRP");
+            Model.Race.SelectedTraits = new List<IRacialTrait>(_selectedTraits.Select(t => t.Trait));
+            Model.Race.AvailableTraits = new List<IRacialTrait>(_availableTraits.Select(t => t.Trait));
+            OnPropertyChanged(nameof(TotalRP));
         }
 
-        public ObservableCollection<Race> RacesList { get { return _myRaceInstances; } }
-
-        public Size Size
+        public ObservableCollection<Race> RacesList { get; } = new ObservableCollection<Race>
         {
-            get { return _race.Size; }
-        }
+            new Dwarf(),
+            new Elf(),
+            new Gnome(),
+            new HalfElf(),
+            new Halfling(),
+            new HalfOrc(),
+            new Human(),
+            new Catfolk()
+        };
 
-        public ObservableCollection<GenericRacialTraitViewModel> AvailableTraits
-        {
-            get { return _availableTraits; }
-        }
+        public Size Size => Model.Race.Size;
 
-        public ObservableCollection<GenericRacialTraitViewModel> SelectedTraits
-        {
-            get { return _selectedTraits; }
-        }
+        public ObservableCollection<GenericRacialTraitViewModel> AvailableTraits => _availableTraits;
+
+        public ObservableCollection<GenericRacialTraitViewModel> SelectedTraits => _selectedTraits;
 
         public string AbilityModifiersString
         {
@@ -235,10 +185,7 @@ namespace GUI.ViewModels
             }
         }
 
-        public RacialTraitCommand MoveFromAvailableToSelectedCommand
-        {
-            get { return _moveFromAvailableToSelectedCommand; }
-        }
+        public RacialTraitCommand MoveFromAvailableToSelectedCommand { get; }
 
         public string TotalRP
         {
@@ -255,10 +202,7 @@ namespace GUI.ViewModels
             }
         }
 
-        public RemoveRacialTraitCommand DeleteSelectedTraitCommand
-        {
-            get { return _removeSelectedTraitCommand; }
-        }
+        public RemoveRacialTraitCommand DeleteSelectedTraitCommand { get; }
 
         public override void ReloadModelValues()
         {
@@ -268,7 +212,7 @@ namespace GUI.ViewModels
     public class GenericRacialTraitViewModel : BaseViewModel
     {
         private readonly RaceViewModel _owner;
-        public IRacialTrait Trait { get; private set; }
+        public IRacialTrait Trait { get; }
 
         public GenericRacialTraitViewModel(IRacialTrait trait, RaceViewModel owner)
         {
@@ -276,9 +220,9 @@ namespace GUI.ViewModels
             Trait = trait;
         }
 
-        public string Name { get { return Trait.Name; } }
+        public string Name => Trait.Name;
 
-        public string Description { get { return Trait.Description; } }
+        public string Description => Trait.Description;
 
         public string ReplacedTraits
         {
@@ -290,19 +234,13 @@ namespace GUI.ViewModels
             }
         }
 
-        public int RP
-        {
-            get { return Trait.RP; }
-        }
+        public int RP => Trait.RP;
 
-        public bool HasRP
-        {
-            get { return RP > 0; }
-        }
+        public bool HasRP => RP > 0;
 
         public void ChangedSelectedTraits()
         {
-            OnPropertyChanged("ReplacedTraits");
+            OnPropertyChanged(nameof(ReplacedTraits));
         }
 
         public override void ReloadModelValues()
