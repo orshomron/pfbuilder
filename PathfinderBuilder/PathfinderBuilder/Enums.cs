@@ -378,6 +378,8 @@ namespace PathfinderBuilder
         AlchemyManual,
         CohortsAndCompanions,
 
+        PathfinderSocietyPrimer,
+
         Pathfinder5SinsOfTheSaviors,
         Pathfinder16EndlessNight,
         

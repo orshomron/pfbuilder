@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using PathfinderBuilder.Races;
 
@@ -6,6 +7,7 @@ namespace PathfinderBuilder
 {
     public sealed class Character
     {
+
         /// <summary>
         /// Before modifications
         /// </summary>
@@ -54,15 +56,52 @@ namespace PathfinderBuilder
 
         public IEnumerable<IFeat> AllFeats => FreeFeats.Union(SelectedFeats);
 
+        public Dictionary<Item, int> Inventory { get; } = new Dictionary<Item, int>();
+
+        public int NominalAC
+        {
+            get
+            {
+                var naturalArmor = Race.SelectedTraits.OfType<INaturalArmor>().Union(Inventory.Keys.OfType<INaturalArmor>()).Max(t => t.NaturalArmorBonus);
+                var naturalArmorEnhancementBonus = Race.SelectedTraits.OfType<INaturalArmorEnhancementBonus>().Union(Inventory.Keys.OfType<INaturalArmorEnhancementBonus>()).Max(t => t.NaturalArmorEnhancementBonus);
+                return 10 + GetCalculatedAbilityModifier(Attributes.Dexterity) + naturalArmor + naturalArmorEnhancementBonus;
+            }
+        }
+
+        public int NominalTouchAC
+        {
+            get { return 10 + GetCalculatedAbilityModifier(Attributes.Dexterity); }
+        }
+
+        public int NominalFlatFootedAC
+        {
+            get
+            {
+                var naturalArmor = Race.SelectedTraits.OfType<INaturalArmor>().Union(Inventory.Keys.OfType<INaturalArmor>()).Max(t => t.NaturalArmorBonus);
+                var naturalArmorEnhancementBonus = Race.SelectedTraits.OfType<INaturalArmorEnhancementBonus>().Union(Inventory.Keys.OfType<INaturalArmorEnhancementBonus>()).Max(t => t.NaturalArmorEnhancementBonus);
+                return 10 + naturalArmor + naturalArmorEnhancementBonus;
+            }
+        }
+
         public void GetCarryCapacity(out double light, out double medium, out double heavy, out double lift, out double push)
         {
             var str = GetCalculatedAttribute(Attributes.Strength);
 
-            var t = CarryCapacityTable.Table[str];
+            var traits = new List<IAddToEffectiveCarryCapacity>();
+            traits.AddRange(AllFeats.OfType<IAddToEffectiveCarryCapacity>());
+            traits.AddRange(Race.SelectedTraits.OfType<IAddToEffectiveCarryCapacity>());
+            traits.AddRange(Inventory.Keys.OfType<IAddToEffectiveCarryCapacity>());
 
-            light = t.Item1;
-            medium = t.Item2;
-            heavy = t.Item3;
+            var effectiveStr = str + traits.Sum(e => e.StrIncrease);
+            var flatBonus = traits.Sum(e => e.FlatBonus);
+            var totalMultiplier = traits.Aggregate(1.0, (i, e) => e.FlatMultiplier * i);
+
+            var t = CarryCapacityTable.Table[effectiveStr];
+
+            light = (t.Item1 + flatBonus) * totalMultiplier;
+            medium = (t.Item2 + flatBonus) * totalMultiplier;
+            heavy = (t.Item3 + flatBonus) * totalMultiplier;
+
             lift = heavy * 2;
             push = heavy * 5;
         }
@@ -70,6 +109,16 @@ namespace PathfinderBuilder
         public int GetCalculatedAttribute(Attributes attribute)
         {
             return AbilityScoresRaw[attribute] + AbilityScoresLevelBonuses[attribute] + Race.GetModifier(attribute);
+        }
+
+        private int GetCalculatedAbilityModifier(Attributes attribute)
+        {
+            return GetAbilityModifier(GetCalculatedAttribute(attribute));
+        }
+
+        private static int GetAbilityModifier(int ability)
+        {
+            return (int)Math.Floor((ability - 10) / 2.0);
         }
     }
 }

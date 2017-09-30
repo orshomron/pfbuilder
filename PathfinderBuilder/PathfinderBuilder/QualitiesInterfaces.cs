@@ -74,4 +74,21 @@ namespace PathfinderBuilder
         /// </summary>
         int Range { get; }
     }
+
+    public interface INaturalArmor
+    {
+        int NaturalArmorBonus { get; }
+    }
+
+    public interface INaturalArmorEnhancementBonus
+    {
+        int NaturalArmorEnhancementBonus { get; }
+    }
+
+    public interface IAddToEffectiveCarryCapacity
+    {
+        int StrIncrease { get; }
+        double FlatBonus { get; }
+        double FlatMultiplier { get;  }
+    }
 }
