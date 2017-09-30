@@ -54,6 +54,19 @@ namespace PathfinderBuilder
 
         public IEnumerable<IFeat> AllFeats => FreeFeats.Union(SelectedFeats);
 
+        public void GetCarryCapacity(out double light, out double medium, out double heavy, out double lift, out double push)
+        {
+            var str = GetCalculatedAttribute(Attributes.Strength);
+
+            var t = CarryCapacityTable.Table[str];
+
+            light = t.Item1;
+            medium = t.Item2;
+            heavy = t.Item3;
+            lift = heavy * 2;
+            push = heavy * 5;
+        }
+
         public int GetCalculatedAttribute(Attributes attribute)
         {
             return AbilityScoresRaw[attribute] + AbilityScoresLevelBonuses[attribute] + Race.GetModifier(attribute);
